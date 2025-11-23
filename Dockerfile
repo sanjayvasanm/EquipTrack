@@ -2,7 +2,7 @@
 FROM maven:3.9.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy Maven config and source code
+# Copy Maven config and source files
 COPY pom.xml .
 COPY src ./src
 
@@ -16,8 +16,6 @@ WORKDIR /app
 # Copy jar from build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Spring Boot default port
 EXPOSE 8080
 
-# Start the app
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
