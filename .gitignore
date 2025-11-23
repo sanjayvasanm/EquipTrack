@@ -33,6 +33,14 @@ Thumbs.db
 # Spring Boot
 application-local.properties
 
+# Documentation files (not needed for execution)
+DEPLOYMENT_GUIDE.md
+ERRORS_FIXED.md
+FINAL_FIXES.md
+MONGODB_MIGRATION_GUIDE.md
+TECHNICAL_CHANGES.md
+QUICKSTART.md
+
 # Kluster
 .github/instructions/kluster-code-verify.instructions.md
 .kluster
