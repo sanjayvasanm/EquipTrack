@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - EquipTrack</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="construction-bar"></div>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="nav-brand">
+                <div class="logo-icon">ET</div>
+                <span class="brand-name">EquipTrack</span>
+            </a>
+            <div class="nav-links">
+                <a href="/">🏠 Home</a>
+                <a href="/browse-equipment">🏗️ Equipment</a>
+                <a href="/my-bookings" class="active">📋 My Bookings</a>
+                <a href="#" id="logoutBtn" class="btn-signup">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="browse-section">
+        <div class="container">
+            <h1 class="page-title">My Bookings</h1>
+            <p class="page-subtitle">Track and manage your equipment rentals</p>
+
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalBookings">0</div>
+                    <div class="stat-label">Total Bookings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="activeBookings">0</div>
+                    <div class="stat-label">Active Rentals</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="completedBookings">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalSpent">₹0</div>
+                    <div class="stat-label">Total Spent</div>
+                </div>
+            </div>
+
+            <div class="data-table" id="bookingsTable">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking #</th>
+                            <th>Equipment</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingsTableBody">
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 3rem;">
+                                <div class="spinner"></div>
+                                <p style="margin-top: 1rem; color: var(--gray-600);">Loading bookings...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 EquipTrack. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script>
+        // Load bookings using the authenticated endpoint
+        async function loadBookings() {
+            try {
+                const response = await fetch('/api/bookings/my-bookings');
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        alert('Please login to view your bookings');
+                        window.location.href = '/login';
+                        return;
+                    }
+                    throw new Error('Failed to load bookings');
+                }
+                
+                const bookings = await response.json();
+                displayBookings(bookings);
+                updateStats(bookings);
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                document.getElementById('bookingsTableBody').innerHTML = 
+                    '<tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--danger-color);">Error loading bookings</td></tr>';
+            }
+        }
+
+        function displayBookings(bookings) {
+            const tbody = document.getElementById('bookingsTableBody');
+            
+            if (bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">No bookings found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = bookings.map(booking => `
+                <tr>
+                    <td><strong>${booking.bookingNumber}</strong></td>
+                    <td>${booking.equipment.name}</td>
+                    <td>${formatDate(booking.startDate)}</td>
+                    <td>${formatDate(booking.endDate)}</td>
+                    <td><span class="status-badge ${getStatusClass(booking.status)}">${booking.status}</span></td>
+                    <td><strong>₹${booking.finalAmount.toFixed(2)}</strong></td>
+                    <td>
+                        ${booking.status === 'PENDING' ? 
+                            `<button class="btn" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 0.5rem 1.5rem; font-size: 0.875rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer;" onclick="cancelBooking('${booking.id}')">Cancel</button>` :
+                            `<span style="color: #64748b;">-</span>`
+                        }
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStats(bookings) {
+            document.getElementById('totalBookings').textContent = bookings.length;
+            document.getElementById('activeBookings').textContent = 
+                bookings.filter(b => b.status === 'IN_PROGRESS' || b.status === 'CONFIRMED').length;
+            document.getElementById('completedBookings').textContent = 
+                bookings.filter(b => b.status === 'COMPLETED').length;
+            
+            const totalSpent = bookings
+                .filter(b => b.status === 'CONFIRMED' || 
+                            b.paymentStatus === 'PAID' || 
+                            b.paymentStatus === 'PARTIALLY_PAID')
+                .reduce((sum, b) => sum + (b.finalAmount || 0), 0);
+            document.getElementById('totalSpent').textContent = '₹' + Math.round(totalSpent).toLocaleString('en-IN');
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'CONFIRMED':
+                case 'IN_PROGRESS':
+                    return 'available';
+                case 'COMPLETED':
+                    return 'available';
+                case 'CANCELLED':
+                    return 'unavailable';
+                default:
+                    return '';
+            }
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        async function cancelBooking(bookingId) {
+            if (!confirm('Are you sure you want to cancel this booking?')) return;
+
+            try {
+                const response = await fetch(`/api/bookings/${bookingId}/cancel?reason=Cancelled by customer`, {
+                    method: 'PUT'
+                });
+
+                if (response.ok) {
+                    alert('Booking cancelled successfully');
+                    loadBookings();
+                } else {
+                    alert('Failed to cancel booking');
+                }
+            } catch (error) {
+                console.error('Error cancelling booking:', error);
+                alert('Error cancelling booking');
+            }
+        }
+
+        function viewDetails(bookingId) {
+            alert('Viewing booking details: ' + bookingId);
+        }
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        });
+
+        // Load bookings on page load
+        loadBookings();
+    </script>
+</body>
+</html>

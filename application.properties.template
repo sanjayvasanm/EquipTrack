@@ -1,0 +1,123 @@
+# EquipTrack Application Configuration Template
+# Copy this file to application.properties and update with your values
+
+# Application Info
+spring.application.name=EquipTrack
+server.port=8080
+
+# ========================================
+# Database Configuration
+# ========================================
+
+# MySQL Production Database
+spring.datasource.url=jdbc:mysql://localhost:3306/equiptrack_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+spring.datasource.username=YOUR_DB_USERNAME
+spring.datasource.password=YOUR_DB_PASSWORD
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# H2 In-Memory Database (for testing)
+# Uncomment these lines and comment MySQL config above for quick testing
+#spring.datasource.url=jdbc:h2:mem:equiptrack_db
+#spring.datasource.driver-class-name=org.h2.Driver
+#spring.h2.console.enabled=true
+#spring.h2.console.path=/h2-console
+
+# ========================================
+# JPA / Hibernate Configuration
+# ========================================
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+spring.jpa.open-in-view=false
+
+# ========================================
+# Thymeleaf Configuration
+# ========================================
+spring.thymeleaf.cache=false
+spring.thymeleaf.enabled=true
+spring.thymeleaf.prefix=classpath:/templates/
+spring.thymeleaf.suffix=.html
+
+# ========================================
+# Static Resources
+# ========================================
+spring.web.resources.static-locations=classpath:/static/
+
+# ========================================
+# File Upload Configuration
+# ========================================
+spring.servlet.multipart.enabled=true
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=10MB
+
+# ========================================
+# JWT Configuration
+# ========================================
+# IMPORTANT: Change this to a secure random string in production
+jwt.secret=CHANGE_THIS_TO_A_SECURE_RANDOM_STRING_AT_LEAST_256_BITS_LONG
+jwt.expiration=86400000
+# 24 hours in milliseconds
+
+# ========================================
+# Email Configuration
+# ========================================
+
+# Gmail Configuration
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=YOUR_EMAIL@gmail.com
+spring.mail.password=YOUR_APP_PASSWORD
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+# For other email providers, update these settings accordingly
+
+# ========================================
+# Stripe Payment Configuration
+# ========================================
+stripe.api.key=YOUR_STRIPE_SECRET_KEY
+stripe.public.key=YOUR_STRIPE_PUBLIC_KEY
+
+# ========================================
+# Logging Configuration
+# ========================================
+logging.level.root=INFO
+logging.level.com.equiptrack=DEBUG
+logging.level.org.springframework.security=DEBUG
+logging.level.org.hibernate.SQL=DEBUG
+logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} - %msg%n
+
+# ========================================
+# Application Settings
+# ========================================
+app.name=EquipTrack
+app.version=1.0.0
+app.frontend.url=http://localhost:8080
+app.admin.email=admin@equiptrack.com
+app.support.email=support@equiptrack.com
+
+# ========================================
+# Security Settings
+# ========================================
+# Set to false in production for better security
+spring.security.user.name=admin
+spring.security.user.password=admin
+
+# ========================================
+# Production Settings
+# ========================================
+# Uncomment these for production deployment
+
+# Enable HTTPS
+#server.ssl.enabled=true
+#server.ssl.key-store=classpath:keystore.p12
+#server.ssl.key-store-password=YOUR_KEYSTORE_PASSWORD
+#server.ssl.key-store-type=PKCS12
+
+# Enable caching
+#spring.thymeleaf.cache=true
+
+# Disable debug logging
+#logging.level.root=WARN
+#logging.level.com.equiptrack=INFO

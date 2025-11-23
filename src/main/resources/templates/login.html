@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - EquipTrack</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+    <!-- Construction accent bar -->
+    <div class="construction-bar"></div>
+    
+    <!-- Navigation Bar -->
+    <nav class="navbar" style="background: transparent; box-shadow: none; border-bottom: none;">
+        <div class="container">
+            <a href="/" class="nav-brand" style="color: var(--white);">
+                <div class="logo-icon">ET</div>
+                <span class="brand-name">EquipTrack</span>
+            </a>
+            <div class="nav-links">
+                <a href="/" style="color: var(--white);">🏠 Home</a>
+                <a href="/browse-equipment" style="color: var(--white);">🏗️ Equipment</a>
+                <a href="/signup" class="btn-signup">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Form -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-icon">
+                🔐
+            </div>
+            <h1 class="auth-title">Welcome Back</h1>
+            <p class="auth-subtitle">Sign in to access your equipment rental account</p>
+
+            <div th:if="${param.success}" class="alert alert-success">
+                ✅ Login successful!
+            </div>
+            <div th:if="${param.error}" class="alert alert-error">
+                ❌ Invalid email or password
+            </div>
+
+            <form action="/login" method="post" class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="email">📧 Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="admin@equiptrack.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">🔑 Password</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">
+                    Login to Dashboard →
+                </button>
+            </form>
+
+            <p class="auth-footer">
+                Don't have an account? <a href="/signup">Sign up</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

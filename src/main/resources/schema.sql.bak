@@ -1,0 +1,257 @@
+-- EquipTrack Database Schema
+-- MySQL Database Creation Script
+
+-- Drop database if exists (use with caution in production)
+-- DROP DATABASE IF EXISTS equiptrack_db;
+
+-- Create database
+CREATE DATABASE IF NOT EXISTS equiptrack_db
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+USE equiptrack_db;
+
+-- Users table
+CREATE TABLE IF NOT EXISTS users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    full_name VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(20),
+    address VARCHAR(255),
+    company VARCHAR(100),
+    role VARCHAR(50) NOT NULL DEFAULT 'CUSTOMER',
+    status VARCHAR(50) NOT NULL DEFAULT 'ACTIVE',
+    email_verified BOOLEAN DEFAULT FALSE,
+    verification_token VARCHAR(255),
+    reset_password_token VARCHAR(255),
+    reset_password_expiry DATETIME,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    last_login_at DATETIME,
+    INDEX idx_email (email),
+    INDEX idx_role (role),
+    INDEX idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Categories table
+CREATE TABLE IF NOT EXISTS categories (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    code VARCHAR(50),
+    description VARCHAR(500),
+    icon_url VARCHAR(200),
+    parent_category_id BIGINT,
+    is_active BOOLEAN DEFAULT TRUE,
+    display_order INT DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (parent_category_id) REFERENCES categories(id),
+    INDEX idx_name (name),
+    INDEX idx_active (is_active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Locations table
+CREATE TABLE IF NOT EXISTS locations (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    code VARCHAR(50),
+    type VARCHAR(50) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    city VARCHAR(100),
+    state VARCHAR(100),
+    zip_code VARCHAR(20),
+    country VARCHAR(100) DEFAULT 'USA',
+    latitude DOUBLE,
+    longitude DOUBLE,
+    phone_number VARCHAR(20),
+    email VARCHAR(100),
+    operating_hours VARCHAR(500),
+    is_active BOOLEAN DEFAULT TRUE,
+    supports_pickup BOOLEAN DEFAULT TRUE,
+    supports_delivery BOOLEAN DEFAULT TRUE,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_name (name),
+    INDEX idx_active (is_active),
+    INDEX idx_type (type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Equipment table
+CREATE TABLE IF NOT EXISTS equipment (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    equipment_code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(200) NOT NULL,
+    description TEXT,
+    category_id BIGINT NOT NULL,
+    location_id BIGINT NOT NULL,
+    daily_rate DECIMAL(10, 2) NOT NULL,
+    weekly_rate DECIMAL(10, 2),
+    monthly_rate DECIMAL(10, 2),
+    status VARCHAR(50) NOT NULL DEFAULT 'AVAILABLE',
+    condition_status VARCHAR(50) NOT NULL DEFAULT 'EXCELLENT',
+    manufacturer VARCHAR(100),
+    model VARCHAR(100),
+    serial_number VARCHAR(50),
+    year_of_manufacture INT,
+    image_url VARCHAR(500),
+    is_active BOOLEAN DEFAULT TRUE,
+    is_featured BOOLEAN DEFAULT FALSE,
+    minimum_rental_days INT DEFAULT 1,
+    maximum_rental_days INT DEFAULT 365,
+    security_deposit DECIMAL(10, 2),
+    terms VARCHAR(500),
+    average_rating DOUBLE DEFAULT 0.0,
+    total_reviews INT DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    last_maintenance_date DATETIME,
+    next_maintenance_date DATETIME,
+    FOREIGN KEY (category_id) REFERENCES categories(id),
+    FOREIGN KEY (location_id) REFERENCES locations(id),
+    INDEX idx_code (equipment_code),
+    INDEX idx_status (status),
+    INDEX idx_category (category_id),
+    INDEX idx_location (location_id),
+    INDEX idx_featured (is_featured)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Bookings table
+CREATE TABLE IF NOT EXISTS bookings (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    booking_number VARCHAR(50) NOT NULL UNIQUE,
+    customer_id BIGINT NOT NULL,
+    equipment_id BIGINT NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    actual_pickup_time DATETIME,
+    actual_return_time DATETIME,
+    status VARCHAR(50) NOT NULL DEFAULT 'PENDING',
+    total_amount DECIMAL(10, 2) NOT NULL,
+    security_deposit DECIMAL(10, 2),
+    discount_amount DECIMAL(10, 2) DEFAULT 0.00,
+    tax_amount DECIMAL(10, 2) DEFAULT 0.00,
+    final_amount DECIMAL(10, 2),
+    notes TEXT,
+    customer_notes TEXT,
+    admin_notes TEXT,
+    payment_status VARCHAR(50) DEFAULT 'UNPAID',
+    delivery_address VARCHAR(200),
+    requires_delivery BOOLEAN DEFAULT FALSE,
+    delivery_fee DECIMAL(10, 2) DEFAULT 0.00,
+    cancelled_at DATETIME,
+    cancellation_reason VARCHAR(500),
+    cancelled_by BIGINT,
+    confirmed_at DATETIME,
+    confirmed_by BIGINT,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES users(id),
+    FOREIGN KEY (equipment_id) REFERENCES equipment(id),
+    FOREIGN KEY (cancelled_by) REFERENCES users(id),
+    FOREIGN KEY (confirmed_by) REFERENCES users(id),
+    INDEX idx_booking_number (booking_number),
+    INDEX idx_customer (customer_id),
+    INDEX idx_equipment (equipment_id),
+    INDEX idx_status (status),
+    INDEX idx_dates (start_date, end_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Payments table
+CREATE TABLE IF NOT EXISTS payments (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    transaction_id VARCHAR(100) NOT NULL UNIQUE,
+    booking_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    payment_method VARCHAR(50) NOT NULL,
+    status VARCHAR(50) NOT NULL DEFAULT 'PENDING',
+    type VARCHAR(50) NOT NULL,
+    description VARCHAR(500),
+    stripe_payment_intent_id VARCHAR(200),
+    stripe_charge_id VARCHAR(200),
+    failure_reason VARCHAR(500),
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    processed_at DATETIME,
+    refunded_at DATETIME,
+    refunded_amount DECIMAL(10, 2),
+    FOREIGN KEY (booking_id) REFERENCES bookings(id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    INDEX idx_transaction (transaction_id),
+    INDEX idx_booking (booking_id),
+    INDEX idx_user (user_id),
+    INDEX idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Maintenance Records table
+CREATE TABLE IF NOT EXISTS maintenance_records (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    equipment_id BIGINT NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    maintenance_date DATE NOT NULL,
+    description TEXT,
+    performed_by VARCHAR(200),
+    cost DECIMAL(10, 2),
+    status VARCHAR(50) NOT NULL DEFAULT 'SCHEDULED',
+    next_maintenance_date DATE,
+    notes VARCHAR(500),
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    completed_at DATETIME,
+    FOREIGN KEY (equipment_id) REFERENCES equipment(id),
+    INDEX idx_equipment (equipment_id),
+    INDEX idx_status (status),
+    INDEX idx_date (maintenance_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Notifications table
+CREATE TABLE IF NOT EXISTS notifications (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    message TEXT,
+    link VARCHAR(500),
+    is_read BOOLEAN DEFAULT FALSE,
+    read_at DATETIME,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    INDEX idx_user (user_id),
+    INDEX idx_read (is_read),
+    INDEX idx_type (type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Equipment Images table
+CREATE TABLE IF NOT EXISTS equipment_images (
+    equipment_id BIGINT NOT NULL,
+    image_url VARCHAR(500),
+    FOREIGN KEY (equipment_id) REFERENCES equipment(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Equipment Specifications table
+CREATE TABLE IF NOT EXISTS equipment_specifications (
+    equipment_id BIGINT NOT NULL,
+    spec_key VARCHAR(100),
+    spec_value VARCHAR(500),
+    FOREIGN KEY (equipment_id) REFERENCES equipment(id) ON DELETE CASCADE,
+    INDEX idx_equipment (equipment_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Insert sample data
+-- Admin user (password: admin123)
+INSERT INTO users (email, password, full_name, role, status, email_verified) 
+VALUES ('admin@equiptrack.com', '$2a$10$8YO9H7zQkxvQkqXZJ.bT6OYV8qN0ysGWYLNlNYKLR7gzW3xGqNKCG', 'Admin User', 'ADMIN', 'ACTIVE', TRUE)
+ON DUPLICATE KEY UPDATE email=email;
+
+-- Sample categories
+INSERT INTO categories (name, code, description, is_active, display_order) 
+VALUES 
+('Heavy Machinery', 'HM', 'Construction and excavation equipment', TRUE, 1),
+('Material Handling', 'MH', 'Forklifts and loading equipment', TRUE, 2),
+('Aerial Lifts', 'AL', 'Scissor lifts and aerial platforms', TRUE, 3)
+ON DUPLICATE KEY UPDATE name=name;
+
+-- Sample locations
+INSERT INTO locations (name, code, type, address, city, state, zip_code, is_active) 
+VALUES 
+('Warehouse A', 'WHA', 'WAREHOUSE', '123 Industrial Blvd', 'New York', 'NY', '10001', TRUE),
+('Warehouse B', 'WHB', 'WAREHOUSE', '456 Commerce St', 'Los Angeles', 'CA', '90001', TRUE),
+('Service Center', 'SC1', 'SERVICE_CENTER', '789 Service Ave', 'Chicago', 'IL', '60601', TRUE)
+ON DUPLICATE KEY UPDATE name=name;

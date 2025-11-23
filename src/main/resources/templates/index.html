@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EquipTrack - Professional Construction Equipment Rental</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Construction accent bar -->
+    <div class="construction-bar"></div>
+    
+    <!-- Use navbar fragment -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">Professional Equipment<br><span class="gradient-text">Rental Solutions</span></h1>
+            <p class="hero-subtitle">Power your projects with our comprehensive fleet of heavy machinery and construction equipment. Real-time availability, instant booking, secure transactions.</p>
+            <div class="hero-actions">
+                <a href="/browse-equipment" class="btn btn-primary">🏗️ Browse Equipment</a>
+                <a href="/signup" class="btn btn-secondary">Get Started Today</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose EquipTrack?</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        🚜
+                    </div>
+                    <h3>Premium Fleet</h3>
+                    <p>Access our extensive inventory of well-maintained heavy machinery, excavators, cranes, loaders, and specialized construction equipment.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        ⚡
+                    </div>
+                    <h3>Instant Booking</h3>
+                    <p>Reserve equipment instantly with our automated booking system. Real-time availability and immediate confirmations 24/7.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        🔒
+                    </div>
+                    <h3>Secure Payments</h3>
+                    <p>Process transactions safely with integrated payment systems, flexible terms, and comprehensive insurance coverage.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        📊
+                    </div>
+                    <h3>Project Management</h3>
+                    <p>Track your rentals, manage multiple projects, view detailed usage reports, and optimize equipment allocation efficiently.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo-icon">ET</div>
+                    <span>EquipTrack</span>
+                </div>
+                <p>&copy; 2025 EquipTrack. Professional Construction Equipment Rental Solutions.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

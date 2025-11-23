@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Main excavator body -->
+  <g fill="#1e293b">
+    <!-- Base/tracks -->
+    <rect x="20" y="140" width="160" height="30" rx="5"/>
+    <rect x="30" y="145" width="20" height="20" rx="3" fill="#475569"/>
+    <rect x="60" y="145" width="20" height="20" rx="3" fill="#475569"/>
+    <rect x="90" y="145" width="20" height="20" rx="3" fill="#475569"/>
+    <rect x="120" y="145" width="20" height="20" rx="3" fill="#475569"/>
+    <rect x="150" y="145" width="20" height="20" rx="3" fill="#475569"/>
+    
+    <!-- Cabin -->
+    <rect x="50" y="100" width="60" height="45" rx="5"/>
+    <rect x="55" y="105" width="50" height="30" rx="3" fill="#64748b"/>
+    
+    <!-- Arm segments -->
+    <rect x="95" y="70" width="60" height="12" rx="3" transform="rotate(-30 125 76)"/>
+    <rect x="135" y="45" width="50" height="10" rx="3" transform="rotate(-60 160 50)"/>
+    
+    <!-- Bucket -->
+    <path d="M 165 30 L 175 25 L 180 35 L 175 40 Z" fill="#334155"/>
+    
+    <!-- Joints -->
+    <circle cx="110" cy="115" r="8" fill="#475569"/>
+    <circle cx="140" cy="65" r="6" fill="#475569"/>
+    <circle cx="165" cy="40" r="5" fill="#475569"/>
+    
+    <!-- Curved track path (decorative) -->
+    <path d="M 30 170 Q 100 160, 170 170" stroke="#94a3b8" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+  </g>
+</svg>

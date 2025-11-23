@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - EquipTrack</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .payment-container {
+            max-width: 600px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .payment-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .payment-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+        
+        .payment-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .payment-subtitle {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+        
+        .booking-info {
+            background: var(--gray-50);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        
+        .info-row:last-child {
+            margin-bottom: 0;
+            padding-top: 0.75rem;
+            border-top: 2px dashed var(--gray-300);
+        }
+        
+        .info-label {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+        
+        .info-value {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .total-amount {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .qr-section {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .qr-container {
+            display: inline-block;
+            padding: 1.5rem;
+            background: white;
+            border: 3px solid var(--primary);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+        
+        .qr-code {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--black) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+            border-radius: 8px;
+        }
+        
+        .upi-info {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--black) 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .upi-id {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .upi-id-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            font-family: monospace;
+        }
+        
+        .copy-btn {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .copy-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .payment-method {
+            padding: 1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-method:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .payment-method-logo {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .payment-method-name {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+            font-weight: 600;
+        }
+        
+        .instructions {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .instructions h3 {
+            color: #1e40af;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .instructions ol {
+            margin: 0;
+            padding-left: 1.5rem;
+            color: #1e40af;
+        }
+        
+        .instructions li {
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn-confirm {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--black) 100%);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-cancel {
+            flex: 1;
+            background: var(--gray-200);
+            color: var(--dark);
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .btn-cancel:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Use navbar fragment -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    
+    <div class="payment-container">
+        <div class="payment-card">
+            <div class="payment-header">
+                <h1 class="payment-title">Complete Payment</h1>
+                <p class="payment-subtitle">Booking #<span id="bookingNumber">Loading...</span></p>
+            </div>
+            
+            <div class="booking-info">
+                <div class="info-row">
+                    <span class="info-label">Equipment</span>
+                    <span class="info-value" id="equipmentName">Loading...</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Rental Period</span>
+                    <span class="info-value" id="rentalPeriod">Loading...</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Number of Days</span>
+                    <span class="info-value" id="numberOfDays">Loading...</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Total Amount</span>
+                    <span class="info-value total-amount" id="totalAmount">₹0</span>
+                </div>
+            </div>
+            
+            <div class="payment-methods">
+                <div class="payment-method">
+                    <div class="payment-method-logo">📱</div>
+                    <div class="payment-method-name">Google Pay</div>
+                </div>
+                <div class="payment-method">
+                    <div class="payment-method-logo">💳</div>
+                    <div class="payment-method-name">PhonePe</div>
+                </div>
+                <div class="payment-method">
+                    <div class="payment-method-logo">🏦</div>
+                    <div class="payment-method-name">Paytm</div>
+                </div>
+                <div class="payment-method">
+                    <div class="payment-method-logo">💰</div>
+                    <div class="payment-method-name">BHIM UPI</div>
+                </div>
+            </div>
+            
+            <div class="upi-info">
+                <div style="text-align: center; margin-bottom: 0.5rem;">
+                    <strong style="font-size: 1.125rem;">Pay Using UPI</strong>
+                </div>
+                <div class="upi-id">
+                    <span class="upi-id-text">equiptrack@upi</span>
+                    <button class="copy-btn" onclick="copyUpiId()">Copy</button>
+                </div>
+            </div>
+            
+            <div class="qr-section">
+                <div class="qr-container">
+                    <div class="qr-code">
+                        <svg width="200" height="200" viewBox="0 0 200 200">
+                            <!-- Simplified QR code representation -->
+                            <rect x="0" y="0" width="60" height="60" fill="white" stroke="currentColor" stroke-width="2"/>
+                            <rect x="10" y="10" width="40" height="40" fill="currentColor"/>
+                            
+                            <rect x="140" y="0" width="60" height="60" fill="white" stroke="currentColor" stroke-width="2"/>
+                            <rect x="150" y="10" width="40" height="40" fill="currentColor"/>
+                            
+                            <rect x="0" y="140" width="60" height="60" fill="white" stroke="currentColor" stroke-width="2"/>
+                            <rect x="10" y="150" width="40" height="40" fill="currentColor"/>
+                            
+                            <rect x="80" y="80" width="40" height="40" fill="currentColor"/>
+                            
+                            <rect x="70" y="10" width="10" height="10" fill="currentColor"/>
+                            <rect x="90" y="20" width="10" height="10" fill="currentColor"/>
+                            <rect x="10" y="70" width="10" height="10" fill="currentColor"/>
+                            <rect x="20" y="90" width="10" height="10" fill="currentColor"/>
+                        </svg>
+                    </div>
+                </div>
+                <p style="color: var(--gray-600); font-size: 0.875rem;">Scan with any UPI app to pay</p>
+            </div>
+            
+            <div class="instructions">
+                <h3>📋 Payment Instructions</h3>
+                <ol>
+                    <li>Open your UPI app (Google Pay, PhonePe, Paytm, etc.)</li>
+                    <li>Scan the QR code above OR enter UPI ID: <strong>equiptrack@upi</strong></li>
+                    <li>Enter the amount: <strong id="instructionAmount">₹0</strong></li>
+                    <li>Complete the payment</li>
+                    <li>Click "I Have Paid" button below after successful payment</li>
+                </ol>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn-cancel" onclick="window.history.back()">Cancel</button>
+                <button class="btn-confirm" onclick="confirmPayment()">I Have Paid</button>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer" style="margin-top: 3rem;">
+        <div class="container">
+            <p>&copy; 2025 EquipTrack. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script th:inline="javascript">
+        const bookingId = /*[[${bookingId}]]*/ null;
+        
+        // Fetch booking details
+        if (bookingId) {
+            fetch(`/api/bookings/${bookingId}`)
+                .then(response => response.json())
+                .then(booking => {
+                    document.getElementById('bookingNumber').textContent = booking.bookingNumber;
+                    document.getElementById('equipmentName').textContent = booking.equipment.name;
+                    document.getElementById('rentalPeriod').textContent = 
+                        formatDate(booking.startDate) + ' - ' + formatDate(booking.endDate);
+                    
+                    const days = calculateDays(booking.startDate, booking.endDate);
+                    document.getElementById('numberOfDays').textContent = days + ' days';
+                    document.getElementById('totalAmount').textContent = '₹' + booking.finalAmount.toLocaleString();
+                    document.getElementById('instructionAmount').textContent = '₹' + booking.finalAmount.toLocaleString();
+                })
+                .catch(error => {
+                    console.error('Error fetching booking:', error);
+                    alert('Error loading booking details');
+                });
+        }
+        
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+        
+        function calculateDays(start, end) {
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+            return Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+        }
+        
+        function copyUpiId() {
+            navigator.clipboard.writeText('equiptrack@upi');
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'Copied!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }
+        
+        function confirmPayment() {
+            if (confirm('Have you completed the payment successfully?')) {
+                // Create manual payment record and auto-confirm booking
+                fetch(`/api/payments/manual?bookingId=${bookingId}`, { method: 'POST' })
+                    .then(r => {
+                        if (!r.ok) throw new Error('Payment endpoint error');
+                        return r.json();
+                    })
+                    .then(payment => {
+                        alert('Payment recorded! Booking confirmed. Transaction: ' + payment.transactionId);
+                        window.location.href = '/my-bookings';
+                    })
+                    .catch(error => {
+                        console.error('Error recording payment:', error);
+                        alert('Payment submitted. Verification pending.');
+                        window.location.href = '/my-bookings';
+                    });
+            }
+        }
+    </script>
+</body>
+</html>

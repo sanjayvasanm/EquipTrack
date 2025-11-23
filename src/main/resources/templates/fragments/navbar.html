@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head></head>
+<body>
+    <!-- Navigation Bar Fragment -->
+    <nav class="navbar" th:fragment="navbar">
+        <div class="container">
+            <a href="/" class="nav-brand">
+                <div class="logo-icon">ET</div>
+                <span class="brand-name">EquipTrack</span>
+            </a>
+            <div class="nav-links">
+                <a href="/">🏠 Home</a>
+                <a href="/browse-equipment">🏗️ Equipment</a>
+                
+                <!-- Show these only when NOT authenticated -->
+                <span sec:authorize="!isAuthenticated()">
+                    <a href="/login">Login</a>
+                    <a href="/signup" class="btn-signup">Sign Up</a>
+                </span>
+                
+                <!-- Show these only when authenticated -->
+                <span sec:authorize="isAuthenticated()">
+                    <!-- Admin-specific links -->
+                    <span sec:authorize="hasRole('ADMIN')">
+                        <a href="/admin/dashboard">📊 Dashboard</a>
+                    </span>
+                    
+                    <!-- Customer-specific links -->
+                    <span sec:authorize="hasRole('CUSTOMER')">
+                        <a href="/my-bookings">📋 My Bookings</a>
+                    </span>
+                    
+                    <!-- User info and logout for all authenticated users -->
+                    <span style="color: var(--gray-700); font-weight: 600; padding: var(--spacing-sm) var(--spacing-md);">
+                        👤 <span sec:authentication="name"></span>
+                    </span>
+                    <form th:action="@{/logout}" method="post" style="display: inline; margin: 0;">
+                        <button type="submit" class="btn-signup" style="border: 2px solid var(--black); cursor: pointer;">Logout</button>
+                    </form>
+                </span>
+            </div>
+        </div>
+    </nav>
+</body>
+</html>

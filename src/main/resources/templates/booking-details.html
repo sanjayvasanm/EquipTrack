@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Details - EquipTrack</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .details-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .details-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .details-section {
+            margin-bottom: 2rem;
+        }
+        
+        .details-section h3 {
+            font-size: 1.25rem;
+            color: #334155;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .detail-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+        
+        .detail-value {
+            font-size: 1rem;
+            color: #1e293b;
+            font-weight: 600;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-confirmed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .payment-paid {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .payment-unpaid {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn-approve {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-approve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-reject {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-reject:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .btn-back {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-back:hover {
+            background: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <div class="details-container">
+        <div class="details-card">
+            <div class="details-header">
+                <div>
+                    <h1 style="font-size: 2rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem;">Booking Details</h1>
+                    <p style="color: #64748b;">Booking Number: <strong th:text="${booking.bookingNumber}"></strong></p>
+                </div>
+                <div>
+                    <span class="status-badge" 
+                          th:classappend="${booking.status == T(com.equiptrack.model.Booking.BookingStatus).PENDING} ? 'status-pending' : 
+                                          ${booking.status == T(com.equiptrack.model.Booking.BookingStatus).CONFIRMED} ? 'status-confirmed' : 'status-cancelled'"
+                          th:text="${booking.status}"></span>
+                </div>
+            </div>
+
+            <!-- Customer Information -->
+            <div class="details-section">
+                <h3>👤 Customer Information</h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Name</span>
+                        <span class="detail-value" th:text="${customer.fullName}"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Email</span>
+                        <span class="detail-value" th:text="${customer.email}"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Phone</span>
+                        <span class="detail-value" th:text="${customer.phoneNumber}"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Company</span>
+                        <span class="detail-value" th:text="${customer.companyName ?: 'N/A'}"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equipment Information -->
+            <div class="details-section">
+                <h3>🚜 Equipment Information</h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Equipment</span>
+                        <span class="detail-value" th:text="${equipment.name}"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Model</span>
+                        <span class="detail-value" th:text="${equipment.model}"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Category</span>
+                        <span class="detail-value" th:text="${category != null ? category.name : 'N/A'}"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Daily Rate</span>
+                        <span class="detail-value" th:text="'₹' + ${equipment.dailyRate}"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rental Period -->
+            <div class="details-section">
+                <h3>📅 Rental Period</h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Start Date</span>
+                        <span class="detail-value" th:text="${#temporals.format(booking.startDate, 'dd MMM yyyy')}"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">End Date</span>
+                        <span class="detail-value" th:text="${#temporals.format(booking.endDate, 'dd MMM yyyy')}"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Duration</span>
+                        <span class="detail-value" th:text="${booking.numberOfDays} + ' days'"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Total Amount</span>
+                        <span class="detail-value" style="font-size: 1.5rem; color: var(--primary-color);" th:text="'₹' + ${booking.totalAmount}"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Information -->
+            <div class="details-section">
+                <h3>💳 Payment Information</h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Payment Status</span>
+                        <span class="status-badge"
+                              th:classappend="${booking.paymentStatus == T(com.equiptrack.model.Booking.PaymentStatus).PAID} ? 'payment-paid' : 'payment-unpaid'"
+                              th:text="${booking.paymentStatus}"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Booking Date</span>
+                        <span class="detail-value" th:text="${#temporals.format(booking.createdAt, 'dd MMM yyyy HH:mm')}"></span>
+                    </div>
+                    <div class="detail-item" th:if="${booking.confirmedAt}">
+                        <span class="detail-label">Confirmed Date</span>
+                        <span class="detail-value" th:text="${#temporals.format(booking.confirmedAt, 'dd MMM yyyy HH:mm')}"></span>
+                    </div>
+                    <div class="detail-item" th:if="${booking.cancelledAt}">
+                        <span class="detail-label">Cancelled Date</span>
+                        <span class="detail-value" th:text="${#temporals.format(booking.cancelledAt, 'dd MMM yyyy HH:mm')}"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delivery Information -->
+            <div class="details-section" th:if="${booking.deliveryAddress}">
+                <h3>📍 Delivery Information</h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Delivery Address</span>
+                        <span class="detail-value" th:text="${booking.deliveryAddress}"></span>
+                    </div>
+                    <div class="detail-item" th:if="${booking.specialRequirements}">
+                        <span class="detail-label">Special Requirements</span>
+                        <span class="detail-value" th:text="${booking.specialRequirements}"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Actions (only for pending bookings) -->
+            <div class="action-buttons" sec:authorize="hasRole('ADMIN')" th:if="${booking.status == T(com.equiptrack.model.Booking.BookingStatus).PENDING}">
+                <button class="btn-approve" onclick="approveBooking()">✓ Approve Booking</button>
+                <button class="btn-reject" onclick="rejectBooking()">✗ Reject Booking</button>
+            </div>
+
+            <!-- Back Button -->
+            <div style="margin-top: 2rem;">
+                <a href="javascript:history.back()" class="btn-back">← Back</a>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        const bookingId = /*[[${booking.id}]]*/ '';
+        
+        function approveBooking() {
+            if (confirm('Are you sure you want to approve this booking?')) {
+                fetch(`/api/bookings/${bookingId}/approve`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Booking approved successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to approve booking');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred');
+                });
+            }
+        }
+        
+        function rejectBooking() {
+            const reason = prompt('Please enter reason for rejection:');
+            if (reason) {
+                fetch(`/api/bookings/${bookingId}/cancel?reason=${encodeURIComponent(reason)}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Booking rejected successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to reject booking');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

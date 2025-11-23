@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Equipment - EquipTrack</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Use navbar fragment -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Browse Equipment Section -->
+    <section class="browse-section">
+        <div class="container">
+            <h1 class="page-title">Browse Equipment</h1>
+            <p class="page-subtitle">Find the perfect equipment for your needs</p>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label>Search</label>
+                    <input type="text" id="searchInput" placeholder="Search equipment..." th:value="${searchQuery}">
+                </div>
+                <div class="filter-group">
+                    <label>Category</label>
+                    <select id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option th:each="category : ${categories}" 
+                                th:value="${category.id}" 
+                                th:text="${category.name}"
+                                th:selected="${category.id == selectedCategory}"></option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="AVAILABLE">Available</option>
+                        <option value="RENTED">Rented</option>
+                        <option value="MAINTENANCE">Maintenance</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Equipment Grid -->
+            <div class="equipment-grid">
+                <div th:each="equipment : ${equipmentList}" class="equipment-card">
+                    <div class="equipment-image" th:style="'background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);'">
+                        <span class="equipment-initial" th:text="${equipment.name.substring(0, 1)}">E</span>
+                    </div>
+                    <div class="equipment-info">
+                        <div class="equipment-header">
+                            <h3 th:text="${equipment.name}">Equipment Name</h3>
+                            <span class="status-badge" 
+                                  th:classappend="${equipment.status == T(com.equiptrack.model.Equipment.EquipmentStatus).AVAILABLE ? 'available' : 'unavailable'}"
+                                  th:text="${equipment.status}">AVAILABLE</span>
+                        </div>
+                        <p class="equipment-description" th:text="${equipment.description}">Description</p>
+                        <div class="equipment-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Daily Rate</span>
+                                <span class="detail-value" th:text="'₹' + ${equipment.dailyRate} + '/day'">₹10200/day</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Location</span>
+                                <span class="detail-value" th:text="${locationMap[equipment.locationId]?.name ?: 'N/A'}">Warehouse A</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Category</span>
+                                <span class="detail-value" th:text="${categoryMap[equipment.categoryId]?.name ?: 'N/A'}">Heavy Machinery</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Available</span>
+                                <span class="detail-value" th:text="${availabilityMap[equipment.id]}">Now</span>
+                            </div>
+                        </div>
+                        <a th:href="@{/equipment/{id}(id=${equipment.id})}" class="btn btn-view">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${#lists.isEmpty(equipmentList)}" class="empty-state">
+                <p>No equipment found matching your criteria.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 EquipTrack. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script>
+        // Filter functionality
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+        document.getElementById('statusFilter').addEventListener('change', applyFilters);
+
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value;
+            const category = document.getElementById('categoryFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            let url = '/browse-equipment?';
+            if (search) url += 'search=' + encodeURIComponent(search) + '&';
+            if (category) url += 'categoryId=' + category + '&';
+            if (status) url += 'status=' + status;
+
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>
