@@ -215,6 +215,33 @@
             </div>
         </div>
 
+        <!-- Pickup Location Information -->
+        <div class="view-card" th:if="${location}">
+            <h2 class="section-title">📍 Pickup Location / Warehouse</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Warehouse Name</span>
+                    <span class="info-value" th:text="${location.name}">Warehouse A</span>
+                </div>
+                <div class="info-item" th:if="${location.phoneNumber}">
+                    <span class="info-label">Contact Number</span>
+                    <span class="info-value" th:text="${location.phoneNumber}">+91 1234567890</span>
+                </div>
+                <div class="info-item" style="grid-column: 1 / -1;" th:if="${location.address}">
+                    <span class="info-label">Address</span>
+                    <span class="info-value" th:text="${location.address + ', ' + location.city + ', ' + location.state + ' ' + location.zipCode}">Full Address</span>
+                </div>
+                <div class="info-item" th:if="${location.operatingHours}">
+                    <span class="info-label">Operating Hours</span>
+                    <span class="info-value" th:text="${location.operatingHours}">Mon-Fri 9AM-6PM</span>
+                </div>
+                <div class="info-item" th:if="${location.email}">
+                    <span class="info-label">Email</span>
+                    <span class="info-value" th:text="${location.email}">warehouse@equiptrack.com</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Delivery Information -->
         <div class="view-card" th:if="${booking.deliveryAddress != null}">
             <h2 class="section-title">📍 Delivery Information</h2>

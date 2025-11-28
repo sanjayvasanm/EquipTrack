@@ -350,6 +350,13 @@
             fetch(`/api/bookings/${bookingId}`)
                 .then(response => response.json())
                 .then(booking => {
+                    // Check if booking is approved
+                    if (booking.status !== 'CONFIRMED') {
+                        alert('This booking is not yet approved by admin. Please wait for approval before making payment.');
+                        window.location.href = '/my-bookings';
+                        return;
+                    }
+                    
                     document.getElementById('bookingNumber').textContent = booking.bookingNumber;
                     document.getElementById('equipmentName').textContent = booking.equipment.name;
                     document.getElementById('rentalPeriod').textContent = 

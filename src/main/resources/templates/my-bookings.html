@@ -115,14 +115,24 @@
             tbody.innerHTML = bookings.map(booking => `
                 <tr>
                     <td><strong>${booking.bookingNumber}</strong></td>
-                    <td>${booking.equipment.name}</td>
+                    <td>
+                        <div>${booking.equipment.name}</div>
+                        ${booking.location ? `<small style="color: #64748b;">📍 ${booking.location.name}</small>` : ''}
+                    </td>
                     <td>${formatDate(booking.startDate)}</td>
                     <td>${formatDate(booking.endDate)}</td>
                     <td><span class="status-badge ${getStatusClass(booking.status)}">${booking.status}</span></td>
                     <td><strong>₹${booking.finalAmount.toFixed(2)}</strong></td>
                     <td>
                         ${booking.status === 'PENDING' ? 
-                            `<button class="btn" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 0.5rem 1.5rem; font-size: 0.875rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer;" onclick="cancelBooking('${booking.id}')">Cancel</button>` :
+                            `<div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start;">
+                                <span style="color: #f59e0b; font-size: 0.875rem; font-weight: 600;">⏳ Awaiting Admin Approval</span>
+                                <button class="btn" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 0.5rem 1.5rem; font-size: 0.875rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer;" onclick="cancelBooking('${booking.id}')">Cancel</button>
+                            </div>` :
+                        booking.status === 'CONFIRMED' && booking.paymentStatus !== 'PAID' ?
+                            `<button class="btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 0.5rem 1.5rem; font-size: 0.875rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer;" onclick="proceedToPayment('${booking.id}')">💳 Proceed to Payment</button>` :
+                        booking.location ?
+                            `<button class="btn" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 0.5rem 1.5rem; font-size: 0.875rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer;" onclick="showLocation('${JSON.stringify(booking.location).replace(/"/g, '&quot;')}')">📍 View Pickup Location</button>` :
                             `<span style="color: #64748b;">-</span>`
                         }
                     </td>
@@ -185,6 +195,20 @@
                 console.error('Error cancelling booking:', error);
                 alert('Error cancelling booking');
             }
+        }
+
+        function proceedToPayment(bookingId) {
+            window.location.href = `/payment?bookingId=${bookingId}`;
+        }
+
+        function showLocation(locationStr) {
+            const location = JSON.parse(locationStr.replace(/&quot;/g, '"'));
+            const message = `📍 Pickup Location:\n\n` +
+                          `Warehouse: ${location.name}\n` +
+                          (location.address ? `Address: ${location.address}, ${location.city}, ${location.state} ${location.zipCode}\n` : '') +
+                          (location.phoneNumber ? `Phone: ${location.phoneNumber}\n` : '') +
+                          (location.operatingHours ? `Hours: ${location.operatingHours}\n` : '');
+            alert(message);
         }
 
         function viewDetails(bookingId) {

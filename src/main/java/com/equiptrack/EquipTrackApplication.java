@@ -9,16 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-/**
- * Main application class for EquipTrack - Equipment Rental Management System
- * 
- * Features:
- * - Real-time equipment tracking
- * - Automated booking system
- * - Payment processing
- * - User management with role-based access
- * - Analytics and reporting
- */
+
 @SpringBootApplication
 @EnableJpaRepositories("com.equiptrack.repository")
 @EnableJpaAuditing

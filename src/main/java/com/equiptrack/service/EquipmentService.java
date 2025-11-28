@@ -126,9 +126,16 @@ public class EquipmentService {
         Equipment equipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Equipment not found with ID: " + id));
         
+        // Prevent deletion of equipment that is currently rented
+        if (equipment.getStatus() == Equipment.EquipmentStatus.RENTED) {
+            throw new RuntimeException("Cannot delete equipment that is currently rented. Please wait until the rental is completed.");
+        }
+        
         equipment.setIsActive(false);
         equipment.setStatus(Equipment.EquipmentStatus.RETIRED);
         equipmentRepository.save(equipment);
+        
+        log.info("Equipment {} marked as RETIRED and inactive", equipment.getEquipmentCode());
     }
 
     public Long getEquipmentCountByStatus(Equipment.EquipmentStatus status) {

@@ -53,7 +53,7 @@
                         <div class="equipment-header">
                             <h3 th:text="${equipment.name}">Equipment Name</h3>
                             <span class="status-badge" 
-                                  th:classappend="${equipment.status == T(com.equiptrack.model.Equipment.EquipmentStatus).AVAILABLE ? 'available' : 'unavailable'}"
+                                  th:classappend="${equipment.status.name() == 'AVAILABLE' ? 'available' : 'unavailable'}"
                                   th:text="${equipment.status}">AVAILABLE</span>
                         </div>
                         <p class="equipment-description" th:text="${equipment.description}">Description</p>

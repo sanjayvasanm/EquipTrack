@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipment Management - EquipTrack Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .admin-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+        
+        .admin-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--black) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group-full {
+            grid-column: 1 / -1;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+        }
+        
+        .btn-add {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--black) 100%);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .btn-add:hover {
+            transform: translateY(-2px);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th {
+            background: var(--gray-50);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 2px solid var(--gray-200);
+        }
+        
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .data-table tr:hover {
+            background: var(--gray-50);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .status-available {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-rented {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-maintenance {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .status-reserved {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+        
+        .btn-delete:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <!-- Use navbar fragment -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1 class="admin-title">Equipment Management</h1>
+            <a href="/admin/dashboard" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">← Back to Dashboard</a>
+        </div>
+        
+        <!-- Add Equipment Form -->
+        <div class="section-card">
+            <h2 class="section-title">Add New Equipment</h2>
+            
+            <form id="addEquipmentForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Equipment Name *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="manufacturer">Manufacturer *</label>
+                        <input type="text" id="manufacturer" name="manufacturer" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="model">Model</label>
+                        <input type="text" id="model" name="model">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="categoryId">Category *</label>
+                        <select id="categoryId" name="categoryId" required>
+                            <option value="">Select Category</option>
+                            <option th:each="category : ${categories}" 
+                                    th:value="${category.id}" 
+                                    th:text="${category.name}">Category</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="locationId">Location *</label>
+                        <select id="locationId" name="locationId" required>
+                            <option value="">Select Location</option>
+                            <option th:each="location : ${locations}" 
+                                    th:value="${location.id}" 
+                                    th:text="${location.name}">Location</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dailyRate">Daily Rate (₹) *</label>
+                        <input type="number" id="dailyRate" name="dailyRate" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="weeklyRate">Weekly Rate (₹)</label>
+                        <input type="number" id="weeklyRate" name="weeklyRate" step="0.01">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monthlyRate">Monthly Rate (₹)</label>
+                        <input type="number" id="monthlyRate" name="monthlyRate" step="0.01">
+                    </div>
+                    
+                    <div class="form-group form-group-full">
+                        <label for="description">Description *</label>
+                        <textarea id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="form-group form-group-full">
+                        <label for="imageUrl">Image URL</label>
+                        <input type="text" id="imageUrl" name="imageUrl" placeholder="https://example.com/image.jpg">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-add">➕ Add Equipment</button>
+            </form>
+        </div>
+        
+        <!-- Equipment List -->
+        <div class="section-card">
+            <h2 class="section-title">All Equipment</h2>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Equipment Code</th>
+                        <th>Name</th>
+                        <th>Manufacturer</th>
+                        <th>Category</th>
+                        <th>Location</th>
+                        <th>Daily Rate</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="equipmentTableBody">
+                    <tr th:each="equipment : ${equipmentList}">
+                        <td th:text="${equipment.equipmentCode}">EQ001</td>
+                        <td>
+                            <strong th:text="${equipment.name}">Equipment Name</strong><br>
+                            <small style="color: var(--gray-600);" th:text="${equipment.model}">Model</small>
+                        </td>
+                        <td th:text="${equipment.manufacturer}">Manufacturer</td>
+                        <td th:text="${categoryMap[equipment.categoryId]?.name ?: 'N/A'}">Category</td>
+                        <td th:text="${locationMap[equipment.locationId]?.name ?: 'N/A'}">Location</td>
+                        <td th:text="'₹' + ${equipment.dailyRate}">₹10,000</td>
+                        <td>
+                            <span class="status-badge" 
+                                  th:classappend="${'status-' + #strings.toLowerCase(equipment.status)}"
+                                  th:text="${equipment.status}">AVAILABLE</span>
+                        </td>
+                        <td>
+                            <button class="btn-delete" 
+                                    th:data-equipment-id="${equipment.id}"
+                                    th:data-equipment-status="${equipment.status}"
+                                    th:disabled="${equipment.status.name() == 'RENTED'}"
+                                    onclick="deleteEquipment(this.dataset.equipmentId, this.dataset.equipmentStatus)">
+                                🗑️ Delete
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 EquipTrack. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Add Equipment Form Handler
+        document.getElementById('addEquipmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                manufacturer: document.getElementById('manufacturer').value,
+                model: document.getElementById('model').value,
+                categoryId: document.getElementById('categoryId').value,
+                locationId: document.getElementById('locationId').value,
+                dailyRate: parseFloat(document.getElementById('dailyRate').value),
+                weeklyRate: document.getElementById('weeklyRate').value ? parseFloat(document.getElementById('weeklyRate').value) : null,
+                monthlyRate: document.getElementById('monthlyRate').value ? parseFloat(document.getElementById('monthlyRate').value) : null,
+                description: document.getElementById('description').value,
+                imageUrl: document.getElementById('imageUrl').value || null,
+                status: 'AVAILABLE',
+                isActive: true,
+                isFeatured: false
+            };
+            
+            try {
+                const response = await fetch('/api/equipment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    alert('Equipment added successfully!');
+                    location.reload();
+                } else {
+                    const error = await response.text();
+                    alert('Error adding equipment: ' + error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while adding equipment');
+            }
+        });
+        
+        // Delete Equipment Handler
+        async function deleteEquipment(equipmentId, status) {
+            if (status === 'RENTED') {
+                alert('Cannot delete equipment that is currently rented!');
+                return;
+            }
+            
+            if (!confirm('Are you sure you want to delete this equipment? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/equipment/${equipmentId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    alert('Equipment deleted successfully!');
+                    location.reload();
+                } else {
+                    alert('Error deleting equipment');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while deleting equipment');
+            }
+        }
+    </script>
+</body>
+</html>

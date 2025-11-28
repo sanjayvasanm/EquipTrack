@@ -112,9 +112,8 @@ public class BookingService {
 
         Booking savedBooking = bookingRepository.save(booking);
 
-        // Update equipment status to RENTED
-        equipment.setStatus(Equipment.EquipmentStatus.RENTED);
-        equipmentRepository.save(equipment);
+        // Don't change equipment status yet - wait for admin approval
+        // Equipment remains AVAILABLE until admin approves the booking
 
         // Send notification
         notificationService.sendBookingConfirmationNotification(savedBooking);
@@ -139,6 +138,38 @@ public class BookingService {
         Booking savedBooking = bookingRepository.save(booking);
         notificationService.sendBookingStatusUpdateNotification(savedBooking);
 
+        return savedBooking;
+    }
+
+    /**
+     * Approve a pending booking - called by admin to allow customer to proceed with payment
+     */
+    @Transactional
+    public Booking approveBooking(String id, User approvedBy) {
+        log.info("Approving booking with ID: {} by user: {}", id, approvedBy.getEmail());
+
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + id));
+
+        if (booking.getStatus() != Booking.BookingStatus.PENDING) {
+            throw new RuntimeException("Only PENDING bookings can be approved");
+        }
+
+        // Change status to CONFIRMED so customer can proceed with payment
+        booking.setStatus(Booking.BookingStatus.CONFIRMED);
+        booking.setConfirmedAt(LocalDateTime.now());
+        booking.setConfirmedById(approvedBy.getId());
+
+        // Set equipment to RENTED (it's now unavailable for others)
+        Equipment equipment = equipmentRepository.findById(booking.getEquipmentId())
+                .orElseThrow(() -> new RuntimeException("Equipment not found"));
+        equipment.setStatus(Equipment.EquipmentStatus.RENTED);
+        equipmentRepository.save(equipment);
+
+        Booking savedBooking = bookingRepository.save(booking);
+        notificationService.sendBookingStatusUpdateNotification(savedBooking);
+
+        log.info("Booking {} approved successfully", booking.getBookingNumber());
         return savedBooking;
     }
 
@@ -172,11 +203,17 @@ public class BookingService {
 
         Equipment equipment = equipmentRepository.findById(booking.getEquipmentId())
                 .orElseThrow(() -> new RuntimeException("Equipment not found"));
-        equipment.setStatus(Equipment.EquipmentStatus.AVAILABLE);
+        
+        // Set equipment to MAINTENANCE for 1 day after return
+        equipment.setStatus(Equipment.EquipmentStatus.MAINTENANCE);
+        equipment.setLastMaintenanceDate(LocalDateTime.now());
+        equipment.setNextMaintenanceDate(LocalDateTime.now().plusDays(1));
         equipmentRepository.save(equipment);
 
         Booking savedBooking = bookingRepository.save(booking);
         notificationService.sendBookingCompletedNotification(savedBooking);
+        
+        log.info("Equipment {} set to MAINTENANCE for 1 day after booking completion", equipment.getEquipmentCode());
 
         return savedBooking;
     }

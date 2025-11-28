@@ -46,6 +46,12 @@ public class PaymentController {
                                                  @AuthenticationPrincipal UserDetails principal) {
         Booking booking = bookingService.getBookingById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
+        
+        // Only allow payment for CONFIRMED bookings
+        if (booking.getStatus() != Booking.BookingStatus.CONFIRMED) {
+            return ResponseEntity.badRequest().body("Payment can only be made for approved bookings. Please wait for admin approval.");
+        }
+        
         if (principal == null) {
             return ResponseEntity.status(401).body("Authentication required");
         }
@@ -69,14 +75,9 @@ public class PaymentController {
         payment.setProcessedAt(LocalDateTime.now());
         paymentService.processPayment(payment.getId()); // simulate processing -> sets COMPLETED
 
-        // Update booking payment status and confirm booking
-        if (booking.getStatus() == Booking.BookingStatus.PENDING) {
-            // Use bookingService.confirmBooking to properly update and save
-            bookingService.confirmBooking(booking.getId(), user);
-        } else {
-            // Just update payment status for non-pending bookings
-            booking.setPaymentStatus(Booking.PaymentStatus.PAID);
-        }
+        // Update booking payment status (booking is already CONFIRMED)
+        booking.setPaymentStatus(Booking.PaymentStatus.PAID);
+        // No need to call confirmBooking again - just update payment status
 
         log.info("Manual payment completed for booking {}", booking.getBookingNumber());
         return ResponseEntity.ok(payment);

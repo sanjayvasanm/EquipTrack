@@ -157,6 +157,7 @@ public class WebController {
     }
 
     @GetMapping("/admin/dashboard")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
     public String adminDashboard(Model model) {
         // Get all bookings
         List<Booking> allBookings = bookingService.getAllBookings();
@@ -256,6 +257,32 @@ public class WebController {
         return "admin-dashboard";
     }
 
+    @GetMapping("/admin/equipment")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
+    public String showAdminEquipmentManagement(Model model) {
+        List<Equipment> equipmentList = equipmentService.getAllEquipment();
+        List<Category> categories = categoryService.getAllActiveCategories();
+        List<Location> locations = locationService.getAllActiveLocations();
+        
+        // Build lookup maps
+        java.util.Map<String, Category> categoryMap = new java.util.HashMap<>();
+        for (Category cat : categories) {
+            categoryMap.put(cat.getId(), cat);
+        }
+        java.util.Map<String, Location> locationMap = new java.util.HashMap<>();
+        for (Location loc : locations) {
+            locationMap.put(loc.getId(), loc);
+        }
+        
+        model.addAttribute("equipmentList", equipmentList);
+        model.addAttribute("categories", categories);
+        model.addAttribute("locations", locations);
+        model.addAttribute("categoryMap", categoryMap);
+        model.addAttribute("locationMap", locationMap);
+        
+        return "admin-equipment";
+    }
+
     @GetMapping("/payment")
     public String payment(@RequestParam String bookingId, Model model) {
         model.addAttribute("bookingId", bookingId);
@@ -263,6 +290,7 @@ public class WebController {
     }
 
     @GetMapping("/admin/booking-view/{id}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
     public String viewBookingDetails(@PathVariable String id, Model model) {
         Booking booking = bookingService.getBookingById(id)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
@@ -273,6 +301,9 @@ public class WebController {
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
         
         Category category = categoryService.getCategoryById(equipment.getCategoryId()).orElse(null);
+        
+        // Get location/warehouse information
+        Location location = locationService.getLocationById(equipment.getLocationId()).orElse(null);
         
         // Calculate duration in days
         long duration = java.time.temporal.ChronoUnit.DAYS.between(booking.getStartDate(), booking.getEndDate());
@@ -290,6 +321,7 @@ public class WebController {
         model.addAttribute("equipment", equipment);
         model.addAttribute("customer", customer);
         model.addAttribute("category", category);
+        model.addAttribute("location", location);
         model.addAttribute("duration", duration);
         model.addAttribute("cancelledByName", cancelledByName);
         

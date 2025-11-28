@@ -29,7 +29,7 @@
                             <p th:text="${equipment.description}" style="color: var(--gray-600); font-size: 1.125rem;">Description</p>
                         </div>
                         <span class="status-badge" 
-                              th:classappend="${equipment.status == T(com.equiptrack.model.Equipment.EquipmentStatus).AVAILABLE ? 'available' : 'unavailable'}"
+                              th:classappend="${equipment.status.name() == 'AVAILABLE' ? 'available' : 'unavailable'}"
                               th:text="${equipment.status}"
                               style="font-size: 1rem; padding: 0.5rem 1rem;">AVAILABLE</span>
                     </div>
@@ -59,6 +59,32 @@
                         <div class="detail-item">
                             <span class="detail-label">📅 Availability</span>
                             <span class="detail-value" th:text="${availabilityMessage}">Available now</span>
+                        </div>
+                    </div>
+
+                    <!-- Warehouse/Pickup Location Information -->
+                    <div th:if="${location}" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; color: white;">
+                        <h3 style="margin-bottom: 1rem; color: white; display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.5rem;">📍</span>
+                            Pickup Location
+                        </h3>
+                        <div style="display: grid; gap: 0.75rem;">
+                            <div>
+                                <strong style="display: block; opacity: 0.9; font-size: 0.875rem;">Warehouse:</strong>
+                                <span th:text="${location.name}" style="font-size: 1.125rem;">Warehouse Name</span>
+                            </div>
+                            <div th:if="${location.address}">
+                                <strong style="display: block; opacity: 0.9; font-size: 0.875rem;">Address:</strong>
+                                <span th:text="${location.address + ', ' + location.city + ', ' + location.state + ' ' + location.zipCode}">Full Address</span>
+                            </div>
+                            <div th:if="${location.phoneNumber}">
+                                <strong style="display: block; opacity: 0.9; font-size: 0.875rem;">Contact:</strong>
+                                <span th:text="${location.phoneNumber}">Phone Number</span>
+                            </div>
+                            <div th:if="${location.operatingHours}">
+                                <strong style="display: block; opacity: 0.9; font-size: 0.875rem;">Operating Hours:</strong>
+                                <span th:text="${location.operatingHours}">Mon-Fri 9AM-6PM</span>
+                            </div>
                         </div>
                     </div>
 
