@@ -3,7 +3,7 @@
 ![EquipTrack Logo](https://img.shields.io/badge/EquipTrack-Equipment%20Rental-blue?style=for-the-badge)
 ![Java](https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=java)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-green?style=for-the-badge&logo=spring)
-![MySQL](https://img.shields.io/badge/MySQL-8.0-blue?style=for-the-badge&logo=mysql)
+![MongoDB](https://img.shields.io/badge/MongoDB-7.0-green?style=for-the-badge&logo=mongodb)
 
 ## 📋 Overview
 
@@ -33,10 +33,10 @@ EquipTrack is a comprehensive equipment rental management system designed to str
 ### Backend
 - **Java 17**: Core programming language
 - **Spring Boot 3.2.0**: Application framework
-- **Spring Data JPA**: Database access
+- **Spring Data MongoDB**: Database access
 - **Spring Security**: Authentication and authorization
-- **MySQL**: Database
-- **Hibernate**: ORM
+- **MongoDB**: NoSQL Database
+- **Spring Scheduling**: Automated maintenance tasks
 - **Lombok**: Reduce boilerplate code
 - **JWT**: Token-based authentication
 
@@ -75,47 +75,82 @@ rental/
 ### Prerequisites
 - Java 17 or higher
 - Maven 3.6+
-- MySQL 8.0+
+- MongoDB 7.0+ (or MongoDB Atlas for cloud database)
 - IDE (IntelliJ IDEA, Eclipse, or VS Code)
 
 ### Installation
 
 1. **Clone the repository**
 ```bash
-git clone <repository-url>
-cd rental
+git clone https://github.com/sanjayvasanm/EquipTrack.git
+cd rental_equipment_construction
 ```
 
-2. **Configure Database**
+2. **Configure MongoDB Database**
 
-Create a MySQL database:
-```sql
-CREATE DATABASE equiptrack_db;
-```
+**Option A: Local MongoDB**
+- Install MongoDB from https://www.mongodb.com/try/download/community
+- Start MongoDB service:
+  - **Windows**: MongoDB should start automatically, or run `net start MongoDB`
+  - **Mac**: `brew services start mongodb-community`
+  - **Linux**: `sudo systemctl start mongod`
+
+**Option B: MongoDB Atlas (Cloud)**
+- Create a free account at https://www.mongodb.com/cloud/atlas
+- Create a cluster and get your connection string
+
+3. **Configure Application Properties**
 
 Update `src/main/resources/application.properties`:
+
+**For Local MongoDB:**
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/equiptrack_db
-spring.datasource.username=your_username
-spring.datasource.password=your_password
+spring.data.mongodb.uri=mongodb://localhost:27017/equiptrack
 ```
 
-3. **Build the project**
+**For MongoDB Atlas:**
+```properties
+spring.data.mongodb.uri=mongodb+srv://<username>:<password>@cluster.mongodb.net/equiptrack
+```
+
+4. **Build the project**
 ```bash
 mvn clean install
 ```
 
-4. **Run the application**
+5. **Run the application**
+
+**Option 1: Using Maven**
 ```bash
 mvn spring-boot:run
 ```
 
-Or use your IDE to run `EquipTrackApplication.java`
+**Option 2: Using Java JAR**
+```bash
+java -jar target/equipment-rental-system-1.0.0.jar
+```
 
-5. **Access the application**
+**Option 3: Using IDE**
+- Open the project in your IDE
+- Run `EquipTrackApplication.java` main class
+
+**Option 4: Using Windows Command (mvnw)**
+```bash
+.\mvnw.cmd spring-boot:run
+```
+
+6. **Access the application**
 - **URL**: http://localhost:8080
 - **Admin Login**: admin@equiptrack.com / admin123
 - **Customer Login**: customer@test.com / customer123
+
+### First Time Setup
+
+On first run, the application will automatically:
+- Create the MongoDB database and collections
+- Initialize sample data (categories, locations, equipment)
+- Create default admin and customer accounts
+- Set up indexes for optimal performance
 
 ## 📱 User Interface
 
@@ -163,15 +198,21 @@ Or use your IDE to run `EquipTrackApplication.java`
 
 ## 📊 Database Schema
 
-### Main Entities
-- **User**: Customer and admin accounts
-- **Equipment**: Rental equipment items
-- **Booking**: Rental bookings
-- **Category**: Equipment categories
-- **Location**: Storage/pickup locations
-- **Payment**: Payment transactions
-- **Maintenance Record**: Equipment maintenance tracking
-- **Notification**: User notifications
+### MongoDB Collections
+- **users**: Customer and admin accounts with authentication
+- **equipment**: Rental equipment items with status tracking
+- **bookings**: Rental bookings with lifecycle management
+- **categories**: Equipment categories for classification
+- **locations**: Storage/pickup warehouse locations
+- **payments**: Payment transactions and processing
+- **maintenanceRecords**: Equipment maintenance history
+- **notifications**: User notifications and alerts
+
+### Key Features
+- **Automatic Status Management**: Equipment status automatically changes (AVAILABLE → RENTED → MAINTENANCE → AVAILABLE)
+- **Scheduled Maintenance**: Automated maintenance completion after 24 hours
+- **Role-based Security**: Method-level authorization for admin operations
+- **Location Tracking**: Warehouse addresses visible to customers for pickup
 
 ## 🔐 Security
 
@@ -243,15 +284,25 @@ mvn test
 ## 🐛 Troubleshooting
 
 ### Database Connection Issues
-- Verify MySQL is running
-- Check credentials in `application.properties`
-- Ensure database exists
+- **Verify MongoDB is running**:
+  - Windows: Check Services or run `mongod --version`
+  - Mac/Linux: Run `sudo systemctl status mongod`
+- **Check connection string** in `application.properties`
+- **MongoDB Atlas**: Ensure your IP is whitelisted in Atlas Network Access
+- **Check credentials** if using authentication
 
 ### Port Already in Use
-- Change port in `application.properties`:
+- Change server port in `application.properties`:
 ```properties
 server.port=8081
 ```
+- Default MongoDB port is 27017, change if needed
+
+### Application Won't Start
+- Ensure Java 17+ is installed: `java -version`
+- Clean and rebuild: `mvn clean install`
+- Check MongoDB is accessible: `mongosh` or MongoDB Compass
+- Review logs for specific error messages
 
 ### Email Not Sending
 - Enable "Less secure app access" for Gmail
