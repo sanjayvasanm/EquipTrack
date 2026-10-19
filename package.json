@@ -1,0 +1,10 @@
+{
+  "name": "equiptrack-platform",
+  "version": "1.0.0",
+  "description": "EquipTrack Heavy Fleet & Industrial Equipment Rental System",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "EquipTrack",
+  "license": "ISC"
+}
