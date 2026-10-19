@@ -37,35 +37,34 @@
                     <div class="equipment-details" style="background: var(--gray-50); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
                         <h3 style="margin-bottom: 1rem; color: var(--dark);">Details</h3>
                         <div class="detail-item">
-                            <span class="detail-label">💰 Daily Rate</span>
+                            <span class="detail-label">Daily Rate</span>
                             <span class="detail-value" th:text="'₹' + ${equipment.dailyRate} + '/day'">₹10200/day</span>
                         </div>
                         <div class="detail-item">
-                            <span class="detail-label">📍 Location</span>
+                            <span class="detail-label">Location</span>
                             <span class="detail-value" th:text="${location?.name ?: 'N/A'}">Warehouse A</span>
                         </div>
                         <div class="detail-item">
-                            <span class="detail-label">📦 Category</span>
+                            <span class="detail-label">Category</span>
                             <span class="detail-value" th:text="${category?.name ?: 'N/A'}">Heavy Machinery</span>
                         </div>
                         <div class="detail-item" th:if="${equipment.manufacturer}">
-                            <span class="detail-label">🏭 Manufacturer</span>
+                            <span class="detail-label">Manufacturer</span>
                             <span class="detail-value" th:text="${equipment.manufacturer}">CAT</span>
                         </div>
                         <div class="detail-item" th:if="${equipment.model}">
-                            <span class="detail-label">🔧 Model</span>
+                            <span class="detail-label">Model</span>
                             <span class="detail-value" th:text="${equipment.model}">320</span>
                         </div>
                         <div class="detail-item">
-                            <span class="detail-label">📅 Availability</span>
+                            <span class="detail-label">Availability</span>
                             <span class="detail-value" th:text="${availabilityMessage}">Available now</span>
                         </div>
                     </div>
 
                     <!-- Warehouse/Pickup Location Information -->
                     <div th:if="${location}" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; color: white;">
-                        <h3 style="margin-bottom: 1rem; color: white; display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-size: 1.5rem;">📍</span>
+                        <h3 style="margin-bottom: 1rem; color: white;">
                             Pickup Location
                         </h3>
                         <div style="display: grid; gap: 0.75rem;">

@@ -10,8 +10,8 @@
                 <span class="brand-name">EquipTrack</span>
             </a>
             <div class="nav-links">
-                <a href="/">🏠 Home</a>
-                <a href="/browse-equipment">🏗️ Equipment</a>
+                <a href="/">Home</a>
+                <a href="/browse-equipment">Equipment Catalog</a>
                 
                 <!-- Show these only when NOT authenticated -->
                 <span sec:authorize="!isAuthenticated()">
@@ -23,18 +23,18 @@
                 <span sec:authorize="isAuthenticated()">
                     <!-- Admin-specific links -->
                     <span sec:authorize="hasRole('ADMIN')">
-                        <a href="/admin/dashboard">📊 Dashboard</a>
-                        <a href="/admin/equipment">🚜 Equipment</a>
+                        <a href="/admin/dashboard">Operations Dashboard</a>
+                        <a href="/admin/equipment">Fleet Inventory</a>
                     </span>
                     
                     <!-- Customer-specific links -->
                     <span sec:authorize="hasRole('CUSTOMER')">
-                        <a href="/my-bookings">📋 My Bookings</a>
+                        <a href="/my-bookings">Active Bookings</a>
                     </span>
                     
                     <!-- User info and logout for all authenticated users -->
                     <span style="color: var(--gray-700); font-weight: 600; padding: var(--spacing-sm) var(--spacing-md);">
-                        👤 <span sec:authentication="name"></span>
+                        <span sec:authentication="name"></span>
                     </span>
                     <form th:action="@{/logout}" method="post" style="display: inline; margin: 0;">
                         <button type="submit" class="btn-signup" style="border: 2px solid var(--black); cursor: pointer;">Logout</button>

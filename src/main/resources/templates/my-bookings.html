@@ -15,9 +15,9 @@
                 <span class="brand-name">EquipTrack</span>
             </a>
             <div class="nav-links">
-                <a href="/">🏠 Home</a>
-                <a href="/browse-equipment">🏗️ Equipment</a>
-                <a href="/my-bookings" class="active">📋 My Bookings</a>
+                <a href="/">Home</a>
+                <a href="/browse-equipment">Equipment</a>
+                <a href="/my-bookings" class="active">My Bookings</a>
                 <a href="#" id="logoutBtn" class="btn-signup">Logout</a>
             </div>
         </div>
@@ -117,7 +117,7 @@
                     <td><strong>${booking.bookingNumber}</strong></td>
                     <td>
                         <div>${booking.equipment.name}</div>
-                        ${booking.location ? `<small style="color: #64748b;">📍 ${booking.location.name}</small>` : ''}
+                        ${booking.location ? `<small style="color: #64748b;">${booking.location.name}</small>` : ''}
                     </td>
                     <td>${formatDate(booking.startDate)}</td>
                     <td>${formatDate(booking.endDate)}</td>
@@ -126,13 +126,13 @@
                     <td>
                         ${booking.status === 'PENDING' ? 
                             `<div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start;">
-                                <span style="color: #f59e0b; font-size: 0.875rem; font-weight: 600;">⏳ Awaiting Admin Approval</span>
+                                <span style="color: #f59e0b; font-size: 0.875rem; font-weight: 600;">Awaiting Admin Approval</span>
                                 <button class="btn" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 0.5rem 1.5rem; font-size: 0.875rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer;" onclick="cancelBooking('${booking.id}')">Cancel</button>
                             </div>` :
                         booking.status === 'CONFIRMED' && booking.paymentStatus !== 'PAID' ?
-                            `<button class="btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 0.5rem 1.5rem; font-size: 0.875rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer;" onclick="proceedToPayment('${booking.id}')">💳 Proceed to Payment</button>` :
+                            `<button class="btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 0.5rem 1.5rem; font-size: 0.875rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer;" onclick="proceedToPayment('${booking.id}')">Proceed to Payment</button>` :
                         booking.location ?
-                            `<button class="btn" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 0.5rem 1.5rem; font-size: 0.875rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer;" onclick="showLocation('${JSON.stringify(booking.location).replace(/"/g, '&quot;')}')">📍 View Pickup Location</button>` :
+                            `<button class="btn" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 0.5rem 1.5rem; font-size: 0.875rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer;" onclick="showLocation('${JSON.stringify(booking.location).replace(/"/g, '&quot;')}')">View Pickup Location</button>` :
                             `<span style="color: #64748b;">-</span>`
                         }
                     </td>

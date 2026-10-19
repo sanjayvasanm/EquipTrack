@@ -1,272 +1,224 @@
 /**
- * EquipTrack - Interactive Fleet Management & Rental Showcase
- * State Management, Reactive Filters, Booking Engine & Admin Operations
+ * EquipTrack - Enterprise Heavy Equipment Fleet & Logistics
+ * State Management, Interactive Filter Engine & Contract Operations
  */
 
-// --- Initial Demo Data ---
+// --- Clean SVG Icons (Lucide-style Line Vectors) ---
+const ICONS = {
+  search: `<svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+  calendar: `<svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+  mapPin: `<svg class="icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  truck: `<svg class="icon" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`,
+  shield: `<svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+  fileText: `<svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+  check: `<svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`,
+  x: `<svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  clock: `<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+  user: `<svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  refresh: `<svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`,
+  plus: `<svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+  sliders: `<svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>`
+};
+
+// --- Enterprise Dataset ---
 const DEFAULT_CATEGORIES = [
-  { id: "CAT-HM", name: "Heavy Machinery", icon: "🚜", count: 4 },
-  { id: "CAT-MH", name: "Material Handling", icon: "🏗️", count: 2 },
-  { id: "CAT-AL", name: "Aerial Lifts", icon: "🪜", count: 1 },
-  { id: "CAT-CE", name: "Concrete Equipment", icon: "🚚", count: 1 },
-  { id: "CAT-CP", name: "Compaction Equipment", icon: "🚜", count: 1 },
-  { id: "CAT-PT", name: "Power & Generators", icon: "⚡", count: 1 }
+  { id: "CAT-HM", name: "Heavy Machinery" },
+  { id: "CAT-MH", name: "Material Handling" },
+  { id: "CAT-AL", name: "Aerial Access" },
+  { id: "CAT-CE", name: "Concrete & Pumping" },
+  { id: "CAT-CP", name: "Compaction Equipment" },
+  { id: "CAT-PT", name: "Power Generation" }
 ];
 
 const DEFAULT_LOCATIONS = [
-  { id: "LOC-NY", name: "Warehouse A (East Hub)", city: "New York, NY", address: "123 Industrial Blvd", phone: "+1 (555) 100-1000", hours: "Mon-Sat: 7 AM - 7 PM" },
-  { id: "LOC-LA", name: "Warehouse B (West Hub)", city: "Los Angeles, CA", address: "456 Commerce St", phone: "+1 (555) 200-2000", hours: "Mon-Sat: 6 AM - 8 PM" },
-  { id: "LOC-CH", name: "Midwest Service Depot", city: "Chicago, IL", address: "789 Service Ave", phone: "+1 (555) 300-3000", hours: "Mon-Fri: 8 AM - 6 PM" }
+  { id: "LOC-NY", name: "Depot North - East Hub", city: "New York, NY", address: "123 Industrial Boulevard", phone: "+1 (555) 100-1000", hours: "Mon-Sat 06:00 - 18:00 EST" },
+  { id: "LOC-LA", name: "Depot West - Pacific Logistics", city: "Los Angeles, CA", address: "456 Logistics Way", phone: "+1 (555) 200-2000", hours: "Mon-Sat 06:00 - 19:00 PST" },
+  { id: "LOC-CH", name: "Depot Central - Midwest Yard", city: "Chicago, IL", address: "789 Commercial Parkway", phone: "+1 (555) 300-3000", hours: "Mon-Fri 07:00 - 17:00 CST" }
 ];
-
-const SVG_ICONS = {
-  excavator: `<svg viewBox="0 0 160 120" width="120" height="90" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M20 90h110v18H20z" fill="#333948" rx="4"/>
-    <circle cx="35" cy="99" r="6" fill="#FFC300"/>
-    <circle cx="65" cy="99" r="6" fill="#FFC300"/>
-    <circle cx="95" cy="99" r="6" fill="#FFC300"/>
-    <circle cx="120" cy="99" r="6" fill="#FFC300"/>
-    <path d="M35 60h45v30H35z" fill="#FFC300" rx="3"/>
-    <path d="M42 66h25v16H42z" fill="#1E293B"/>
-    <path d="M75 75l45-35 25 15-10 20" stroke="#FFC300" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M135 75l15 15h-20z" fill="#FFB000"/>
-  </svg>`,
-  bulldozer: `<svg viewBox="0 0 160 120" width="120" height="90" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M15 85h115v22H15z" fill="#333948" rx="4"/>
-    <circle cx="30" cy="96" r="7" fill="#FFC300"/>
-    <circle cx="58" cy="96" r="7" fill="#FFC300"/>
-    <circle cx="86" cy="96" r="7" fill="#FFC300"/>
-    <circle cx="115" cy="96" r="7" fill="#FFC300"/>
-    <path d="M40 50h45v35H40z" fill="#FFC300" rx="4"/>
-    <path d="M48 56h25v18H48z" fill="#1E293B"/>
-    <path d="M125 55l15 45-8 5-15-45z" fill="#FFB000"/>
-    <path d="M140 60v40" stroke="#E2E8F0" stroke-width="6" stroke-linecap="round"/>
-  </svg>`,
-  loader: `<svg viewBox="0 0 160 120" width="120" height="90" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="40" cy="92" r="16" fill="#333948"/>
-    <circle cx="40" cy="92" r="7" fill="#FFC300"/>
-    <circle cx="115" cy="92" r="16" fill="#333948"/>
-    <circle cx="115" cy="92" r="7" fill="#FFC300"/>
-    <path d="M40 60h45v25H40z" fill="#FFC300" rx="3"/>
-    <path d="M48 66h22v14H48z" fill="#1E293B"/>
-    <path d="M85 75l45-15 15 30h-15" stroke="#FFC300" stroke-width="7" stroke-linecap="round"/>
-  </svg>`,
-  forklift: `<svg viewBox="0 0 160 120" width="120" height="90" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="45" cy="95" r="14" fill="#333948"/>
-    <circle cx="100" cy="95" r="14" fill="#333948"/>
-    <path d="M30 55h40v35H30z" fill="#FFC300" rx="4"/>
-    <path d="M35 62h18v18H35z" fill="#1E293B"/>
-    <path d="M110 35v60M110 95h35" stroke="#FFB000" stroke-width="6" stroke-linecap="round"/>
-  </svg>`,
-  crane: `<svg viewBox="0 0 160 120" width="120" height="90" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M25 85h100v20H25z" fill="#333948" rx="4"/>
-    <circle cx="45" cy="95" r="8" fill="#FFC300"/>
-    <circle cx="75" cy="95" r="8" fill="#FFC300"/>
-    <circle cx="105" cy="95" r="8" fill="#FFC300"/>
-    <path d="M45 55h35v30H45z" fill="#FFC300" rx="3"/>
-    <path d="M75 60l65-40" stroke="#FFC300" stroke-width="6" stroke-linecap="round"/>
-    <path d="M140 20v45" stroke="#E2E8F0" stroke-width="3" stroke-dasharray="3,3"/>
-    <circle cx="140" cy="68" r="4" fill="#E2E8F0"/>
-  </svg>`,
-  roller: `<svg viewBox="0 0 160 120" width="120" height="90" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="120" cy="85" r="22" fill="#64748B" stroke="#333948" stroke-width="6"/>
-    <circle cx="45" cy="90" r="16" fill="#333948"/>
-    <path d="M45 60h45v25H45z" fill="#FFC300" rx="3"/>
-    <path d="M52 66h22v14H52z" fill="#1E293B"/>
-    <path d="M90 75h30" stroke="#FFB000" stroke-width="8" stroke-linecap="round"/>
-  </svg>`,
-  generator: `<svg viewBox="0 0 160 120" width="120" height="90" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="35" y="45" width="90" height="55" rx="6" fill="#FFC300" stroke="#333948" stroke-width="4"/>
-    <rect x="45" y="55" width="30" height="20" rx="2" fill="#1E293B"/>
-    <circle cx="100" cy="65" r="12" fill="#333948"/>
-    <path d="M96 65h8M100 61v8" stroke="#10B981" stroke-width="2"/>
-    <rect x="45" y="85" width="70" height="6" fill="#333948" rx="2"/>
-  </svg>`
-};
 
 const DEFAULT_EQUIPMENT = [
   {
     id: "EQ000001",
-    name: "Excavator CAT 320",
-    code: "EQ000001",
+    name: "Caterpillar 320 Hydraulic Excavator",
+    code: "CAT-320D3",
     category: "CAT-HM",
     categoryName: "Heavy Machinery",
     location: "LOC-NY",
-    locationName: "Warehouse A (East Hub)",
+    locationName: "Depot North (East Hub)",
     dailyRate: 38250,
     weeklyRate: 238000,
     securityDeposit: 170000,
     status: "AVAILABLE",
-    condition: "EXCELLENT",
-    manufacturer: "Caterpillar",
-    model: "320 D3",
-    year: 2021,
-    operatingWeight: "22.5 Tonnes",
-    horsepower: "174 HP",
-    digDepth: "6.72 m",
-    description: "Next-generation hydraulic excavator engineered for high-production digging, bulk excavation, and trenching.",
-    svgType: "excavator",
+    condition: "CERTIFIED",
+    manufacturer: "Caterpillar Inc.",
+    model: "320 D3 Series",
+    year: 2022,
+    operatingWeight: "22,500 kg",
+    horsepower: "174 HP @ 2000 rpm",
+    digDepth: "6.72 meters",
+    fuelType: "Ultra-low Sulfur Diesel",
+    description: "Standard industrial crawler excavator fitted with Grade Assist technology and standard 1.19 m³ bucket capacity.",
     featured: true
   },
   {
     id: "EQ000002",
-    name: "Bulldozer CAT D6",
-    code: "EQ000002",
+    name: "Caterpillar D6 Track-Type Tractor",
+    code: "CAT-D6T",
     category: "CAT-HM",
     categoryName: "Heavy Machinery",
     location: "LOC-NY",
-    locationName: "Warehouse A (East Hub)",
+    locationName: "Depot North (East Hub)",
     dailyRate: 46750,
     weeklyRate: 297500,
     securityDeposit: 212500,
     status: "AVAILABLE",
-    condition: "GOOD",
-    manufacturer: "Caterpillar",
-    model: "D6 T-Series",
-    year: 2020,
-    operatingWeight: "19.8 Tonnes",
-    horsepower: "215 HP",
+    condition: "CERTIFIED",
+    manufacturer: "Caterpillar Inc.",
+    model: "D6 T-Series XL",
+    year: 2021,
+    operatingWeight: "19,800 kg",
+    horsepower: "215 HP Net",
     digDepth: "Blade Capacity 5.6 m³",
-    description: "High-horsepower crawler tractor offering class-leading pushing power, precision grade control, and heavy earthmoving.",
-    svgType: "bulldozer",
+    fuelType: "Heavy Diesel",
+    description: "Heavy production crawler dozer equipped with semi-universal blade and differential steering for grading and clearing.",
     featured: true
   },
   {
     id: "EQ000003",
-    name: "Backhoe Loader JCB 3DX",
-    code: "EQ000003",
+    name: "JCB 3DX Super Backhoe Loader",
+    code: "JCB-3DXS",
     category: "CAT-HM",
     categoryName: "Heavy Machinery",
     location: "LOC-LA",
-    locationName: "Warehouse B (West Hub)",
+    locationName: "Depot West (Pacific)",
     dailyRate: 29750,
     weeklyRate: 191250,
     securityDeposit: 127500,
     status: "RENTED",
-    condition: "EXCELLENT",
-    manufacturer: "JCB",
-    model: "3DX Super",
-    year: 2022,
-    operatingWeight: "7.6 Tonnes",
-    horsepower: "76 HP",
-    digDepth: "4.77 m",
-    description: "The most versatile dual-purpose loading and digging machine for road repair, utility work, and urban infrastructure.",
-    svgType: "loader",
+    condition: "IN SERVICE",
+    manufacturer: "JCB Corporation",
+    model: "3DX Super EcoMax",
+    year: 2023,
+    operatingWeight: "7,600 kg",
+    horsepower: "76 HP Turbo",
+    digDepth: "4.77 meters",
+    fuelType: "Diesel",
+    description: "Multi-purpose wheeled utility backhoe with heavy-duty front shovel and telescoping dipper arm.",
     featured: true
   },
   {
     id: "EQ000004",
-    name: "Skid Steer Bobcat S590",
-    code: "EQ000004",
+    name: "Bobcat S590 Skid-Steer Loader",
+    code: "BOB-S590",
     category: "CAT-MH",
     categoryName: "Material Handling",
     location: "LOC-LA",
-    locationName: "Warehouse B (West Hub)",
+    locationName: "Depot West (Pacific)",
     dailyRate: 18500,
     weeklyRate: 118000,
     securityDeposit: 75000,
     status: "AVAILABLE",
-    condition: "EXCELLENT",
-    manufacturer: "Bobcat",
-    model: "S590 Vertical Lift",
+    condition: "CERTIFIED",
+    manufacturer: "Bobcat Doosan",
+    model: "S590 T4 Vertical Lift",
     year: 2023,
-    operatingWeight: "3.1 Tonnes",
-    horsepower: "68 HP",
-    digDepth: "Dump Height 3.0 m",
-    description: "Compact agile loader with vertical lift path designed for loading high-sided trucks and tight job site maneuvers.",
-    svgType: "loader",
+    operatingWeight: "3,127 kg",
+    horsepower: "68 HP Tier 4",
+    digDepth: "Hinge Pin Height 3.02 m",
+    fuelType: "Diesel",
+    description: "Vertical-path compact skid loader engineered for pallet unloading, tight utility access, and civil work.",
     featured: false
   },
   {
     id: "EQ000005",
-    name: "Forklift Toyota 8FDU30",
-    code: "EQ000005",
+    name: "Toyota 8FDU30 Industrial Forklift",
+    code: "TOY-8FDU30",
     category: "CAT-MH",
     categoryName: "Material Handling",
     location: "LOC-CH",
-    locationName: "Midwest Service Depot",
+    locationName: "Depot Central (Midwest)",
     dailyRate: 14200,
     weeklyRate: 89000,
     securityDeposit: 60000,
     status: "AVAILABLE",
-    condition: "EXCELLENT",
-    manufacturer: "Toyota",
-    model: "8FDU30 Diesel",
-    year: 2021,
-    operatingWeight: "4.2 Tonnes",
-    horsepower: "55 HP",
-    digDepth: "Lift Height 4.8 m",
-    description: "Heavy-duty 3-ton pneumatic tire forklift optimized for construction lumber yards, pipe stacking, and outdoor material logistics.",
-    svgType: "forklift",
+    condition: "CERTIFIED",
+    manufacturer: "Toyota Material Handling",
+    model: "8FDU30 Pneumatic",
+    year: 2022,
+    operatingWeight: "4,250 kg",
+    horsepower: "55 HP Industrial",
+    digDepth: "Mast Lift 4.80 m (3-Stage)",
+    fuelType: "Diesel / Dual-Fuel",
+    description: "Heavy rough-terrain forklift with pneumatic tires and integral side-shifter for logistics yards and steel yards.",
     featured: false
   },
   {
     id: "EQ000006",
-    name: "Telescopic Boom Lift Genie S-85",
-    code: "EQ000006",
+    name: "Genie S-85 Telescopic Boom Lift",
+    code: "GEN-S85",
     category: "CAT-AL",
-    categoryName: "Aerial Lifts",
+    categoryName: "Aerial Access",
     location: "LOC-NY",
-    locationName: "Warehouse A (East Hub)",
+    locationName: "Depot North (East Hub)",
     dailyRate: 32000,
     weeklyRate: 205000,
     securityDeposit: 140000,
     status: "AVAILABLE",
-    condition: "EXCELLENT",
-    manufacturer: "Genie",
-    model: "S-85 4WD",
+    condition: "CERTIFIED",
+    manufacturer: "Terex Genie",
+    model: "S-85 XC 4WD",
     year: 2022,
-    operatingWeight: "17.9 Tonnes",
-    horsepower: "74 HP",
+    operatingWeight: "17,900 kg",
+    horsepower: "74 HP Diesel",
     digDepth: "Working Height 27.9 m",
-    description: "Self-propelled telescopic boom with 360-degree continuous rotation for structural steel erection and industrial cladding.",
-    svgType: "crane",
+    fuelType: "Diesel",
+    description: "High-capacity rough-terrain telescoping personnel lift with 360-degree continuous turntable rotation.",
     featured: true
   },
   {
     id: "EQ000007",
-    name: "Road Roller Bomag BW 211",
-    code: "EQ000007",
+    name: "Bomag BW 211 D-5 Soil Compactor",
+    code: "BOM-BW211",
     category: "CAT-CP",
     categoryName: "Compaction Equipment",
     location: "LOC-LA",
-    locationName: "Warehouse B (West Hub)",
+    locationName: "Depot West (Pacific)",
     dailyRate: 26500,
     weeklyRate: 168000,
     securityDeposit: 110000,
     status: "MAINTENANCE",
-    condition: "GOOD",
-    manufacturer: "Bomag",
-    model: "BW 211 D-5",
-    year: 2019,
-    operatingWeight: "11.2 Tonnes",
-    horsepower: "128 HP",
-    digDepth: "Drum Width 2.13 m",
-    description: "Single-drum vibratory compactor for soil stabilization, highway sub-bases, and large-scale industrial paving.",
-    svgType: "roller",
+    condition: "SCHEDULED SERVICE",
+    manufacturer: "Bomag Fayat Group",
+    model: "BW 211 D-5 Tier 4f",
+    year: 2020,
+    operatingWeight: "11,200 kg",
+    horsepower: "128 HP Deutz",
+    digDepth: "Drum Width 2,130 mm",
+    fuelType: "Diesel",
+    description: "Single-drum vibratory roller for deep soil compaction, embankment foundation, and highway sub-base.",
     featured: false
   },
   {
     id: "EQ000008",
-    name: "Cummins 125kVA Generator",
-    code: "EQ000008",
+    name: "Cummins C125D5 Acoustic Generator",
+    code: "CUM-C125",
     category: "CAT-PT",
-    categoryName: "Power & Generators",
+    categoryName: "Power Generation",
     location: "LOC-CH",
-    locationName: "Midwest Service Depot",
+    locationName: "Depot Central (Midwest)",
     dailyRate: 12500,
     weeklyRate: 79000,
     securityDeposit: 50000,
     status: "AVAILABLE",
-    condition: "EXCELLENT",
-    manufacturer: "Cummins",
-    model: "C125D5 Silent",
+    condition: "CERTIFIED",
+    manufacturer: "Cummins Power Systems",
+    model: "C125D5 Enclosed",
     year: 2023,
-    operatingWeight: "1.9 Tonnes",
-    horsepower: "150 HP Engine",
-    digDepth: "Output 100 kW / 3 Phase",
-    description: "Acoustic-enclosed ultra-silent diesel generator with automated transfer switch for continuous heavy-duty jobsite power.",
-    svgType: "generator",
+    operatingWeight: "1,980 kg",
+    horsepower: "140 HP 6BTAA",
+    digDepth: "Prime 125 kVA / 100 kW",
+    fuelType: "Diesel (24h internal tank)",
+    description: "Weather-protective sound-attenuated diesel generation set with digital auto-start controller.",
     featured: false
   }
 ];
@@ -275,8 +227,8 @@ const DEFAULT_BOOKINGS = [
   {
     id: "EQT-2026-9811",
     equipmentId: "EQ000001",
-    equipmentName: "Excavator CAT 320",
-    customerName: "Rajesh Sharma",
+    equipmentName: "Caterpillar 320 Hydraulic Excavator",
+    customerName: "Apex Infrastructure Contractors",
     customerEmail: "customer@test.com",
     startDate: "2026-10-25",
     endDate: "2026-10-30",
@@ -284,35 +236,35 @@ const DEFAULT_BOOKINGS = [
     subtotal: 229500,
     tax: 11475,
     total: 240975,
-    location: "Warehouse A (East Hub)",
+    location: "Depot North - East Hub",
     status: "APPROVED",
-    pickupType: "Heavy Delivery",
+    pickupType: "Commercial Hauler Dispatch",
     operatorRequested: true,
     createdDate: "2026-10-18"
   },
   {
     id: "EQT-2026-9812",
     equipmentId: "EQ000003",
-    equipmentName: "Backhoe Loader JCB 3DX",
-    customerName: "Metro Infrastructure Ltd",
-    customerEmail: "logistics@metroinfra.in",
+    equipmentName: "JCB 3DX Super Backhoe Loader",
+    customerName: "Midland Civil Engineering LLC",
+    customerEmail: "logistics@midlandcivil.com",
     startDate: "2026-10-15",
     endDate: "2026-11-05",
     days: 22,
     subtotal: 654500,
     tax: 32725,
     total: 687225,
-    location: "Warehouse B (West Hub)",
+    location: "Depot West - Pacific Logistics",
     status: "ACTIVE",
-    pickupType: "Warehouse Pickup",
+    pickupType: "Direct Depot Pickup",
     operatorRequested: false,
     createdDate: "2026-10-12"
   },
   {
     id: "EQT-2026-9813",
     equipmentId: "EQ000006",
-    equipmentName: "Telescopic Boom Lift Genie S-85",
-    customerName: "Rajesh Sharma",
+    equipmentName: "Genie S-85 Telescopic Boom Lift",
+    customerName: "Apex Infrastructure Contractors",
     customerEmail: "customer@test.com",
     startDate: "2026-11-01",
     endDate: "2026-11-04",
@@ -320,15 +272,14 @@ const DEFAULT_BOOKINGS = [
     subtotal: 128000,
     tax: 6400,
     total: 134400,
-    location: "Warehouse A (East Hub)",
+    location: "Depot North - East Hub",
     status: "PENDING",
-    pickupType: "Warehouse Pickup",
+    pickupType: "Direct Depot Pickup",
     operatorRequested: false,
     createdDate: "2026-10-19"
   }
 ];
 
-// --- Application State Manager ---
 class EquipTrackApp {
   constructor() {
     this.initDatabase();
@@ -381,7 +332,7 @@ class EquipTrackApp {
   resetAllData() {
     localStorage.setItem("et_equipment", JSON.stringify(DEFAULT_EQUIPMENT));
     localStorage.setItem("et_bookings", JSON.stringify(DEFAULT_BOOKINGS));
-    this.showToast("Demo database successfully restored to factory defaults!", "success");
+    this.showToast("Database restored to default enterprise fleet records.", "success");
     this.render();
   }
 
@@ -389,14 +340,14 @@ class EquipTrackApp {
     this.currentRole = newRole;
     localStorage.setItem("et_active_role", newRole);
     
-    // Auto switch tab if permissions change
     if (newRole === "guest" && (this.currentTab === "bookings" || this.currentTab === "admin")) {
       this.currentTab = "browse";
     } else if (newRole === "customer" && this.currentTab === "admin") {
       this.currentTab = "browse";
     }
 
-    this.showToast(`Switched active persona to: ${newRole.toUpperCase()}`, "info");
+    const roleName = newRole === "admin" ? "Fleet Operations Director" : (newRole === "customer" ? "Contractor Account" : "Public View");
+    this.showToast(`Switched active context to: ${roleName}`, "info");
     this.render();
   }
 
@@ -410,7 +361,6 @@ class EquipTrackApp {
     return "₹" + Number(val).toLocaleString("en-IN");
   }
 
-  // --- Filtering & Sorting ---
   getFilteredEquipment() {
     let list = this.getEquipmentList();
 
@@ -420,6 +370,7 @@ class EquipTrackApp {
         item.name.toLowerCase().includes(q) ||
         item.manufacturer.toLowerCase().includes(q) ||
         item.model.toLowerCase().includes(q) ||
+        item.code.toLowerCase().includes(q) ||
         item.description.toLowerCase().includes(q)
       );
     }
@@ -443,14 +394,12 @@ class EquipTrackApp {
     } else if (this.filters.sortBy === "NAME_ASC") {
       list.sort((a, b) => a.name.localeCompare(b.name));
     } else {
-      // Featured / default
       list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
     }
 
     return list;
   }
 
-  // --- Date Calculation Engine ---
   calculatePricing(equipment, startDateStr, endDateStr) {
     if (!startDateStr || !endDateStr) {
       return { days: 0, subtotal: 0, tax: 0, total: 0 };
@@ -468,7 +417,6 @@ class EquipTrackApp {
     return { days, subtotal, tax, total };
   }
 
-  // --- Modals ---
   openEquipmentModal(eqId) {
     const eq = this.getEquipmentList().find(e => e.id === eqId);
     if (!eq) return;
@@ -489,16 +437,14 @@ class EquipTrackApp {
     document.getElementById("modalEqWeight").textContent = eq.operatingWeight || "N/A";
     document.getElementById("modalEqHP").textContent = eq.horsepower || "N/A";
     document.getElementById("modalEqDepth").textContent = eq.digDepth || "N/A";
-    document.getElementById("modalEqYear").textContent = eq.year || "2021";
-
-    const svgSlot = document.getElementById("modalEqSvgSlot");
-    svgSlot.innerHTML = SVG_ICONS[eq.svgType] || SVG_ICONS.loader;
+    document.getElementById("modalEqFuel").textContent = eq.fuelType || "Standard Diesel";
+    document.getElementById("modalEqYear").textContent = eq.year || "2022";
+    document.getElementById("modalEqMfg").textContent = eq.manufacturer;
 
     const statusBadge = document.getElementById("modalEqStatus");
-    statusBadge.className = `status-chip ${eq.status.toLowerCase()}`;
-    statusBadge.innerHTML = `<span class="status-chip-dot"></span> ${eq.status}`;
+    statusBadge.className = `badge-status ${eq.status.toLowerCase()}`;
+    statusBadge.innerHTML = `<span class="badge-dot"></span> ${eq.status}`;
 
-    // Dates
     const startInput = document.getElementById("bookingStartDate");
     const endInput = document.getElementById("bookingEndDate");
     startInput.min = today;
@@ -507,7 +453,6 @@ class EquipTrackApp {
     endInput.value = nextWeek;
 
     this.updateModalCalculation();
-
     modal.classList.add("active");
   }
 
@@ -530,20 +475,20 @@ class EquipTrackApp {
     const bookBtn = document.getElementById("btnProceedCheckout");
     if (calc.days > 0 && this.selectedEquipment.status === "AVAILABLE") {
       bookBtn.disabled = false;
-      bookBtn.textContent = `Reserve Now • ${this.formatCurrency(calc.total)}`;
+      bookBtn.textContent = `Reserve Fleet • ${this.formatCurrency(calc.total)}`;
     } else if (this.selectedEquipment.status !== "AVAILABLE") {
       bookBtn.disabled = true;
-      bookBtn.textContent = `Machine is currently ${this.selectedEquipment.status}`;
+      bookBtn.textContent = `Unit is currently ${this.selectedEquipment.status}`;
     } else {
       bookBtn.disabled = true;
-      bookBtn.textContent = "Select Valid Dates";
+      bookBtn.textContent = "Specify Valid Lease Dates";
     }
   }
 
   proceedToCheckout() {
     if (this.currentRole === "guest") {
       this.closeEquipmentModal();
-      this.showToast("Please switch to 'Customer Persona' to submit bookings!", "danger");
+      this.showToast("Please switch to Contractor Account to reserve equipment.", "danger");
       return;
     }
     this.closeEquipmentModal();
@@ -557,7 +502,7 @@ class EquipTrackApp {
     if (!eq) return;
 
     document.getElementById("checkoutMachineName").textContent = eq.name;
-    document.getElementById("checkoutDuration").textContent = `${calc.days} Days (${document.getElementById("bookingStartDate").value} to ${document.getElementById("bookingEndDate").value})`;
+    document.getElementById("checkoutDuration").textContent = `${calc.days} Days (${document.getElementById("bookingStartDate").value} through ${document.getElementById("bookingEndDate").value})`;
     document.getElementById("checkoutTotalPayable").textContent = this.formatCurrency(calc.total);
 
     modal.classList.add("active");
@@ -582,7 +527,7 @@ class EquipTrackApp {
       id: bookingId,
       equipmentId: eq.id,
       equipmentName: eq.name,
-      customerName: this.currentRole === "customer" ? "Rajesh Sharma" : "Guest User",
+      customerName: "Apex Infrastructure Contractors",
       customerEmail: "customer@test.com",
       startDate: startDate,
       endDate: endDate,
@@ -591,7 +536,7 @@ class EquipTrackApp {
       tax: calc.tax,
       total: calc.total,
       location: eq.locationName,
-      status: "APPROVED", // Auto-approved for instant satisfaction
+      status: "APPROVED",
       pickupType: delivery,
       operatorRequested: operator,
       notes: notes,
@@ -603,18 +548,17 @@ class EquipTrackApp {
     this.saveBookingsList(bookings);
 
     this.closeCheckoutModal();
-    this.showToast(`🎉 Booking ${bookingId} successfully confirmed!`, "success");
+    this.showToast(`Contract ${bookingId} successfully confirmed and scheduled.`, "success");
     this.switchTab("bookings");
   }
 
-  // --- Admin Operations ---
   approveBooking(bookingId) {
     const list = this.getBookingsList();
     const b = list.find(x => x.id === bookingId);
     if (b) {
       b.status = "APPROVED";
       this.saveBookingsList(list);
-      this.showToast(`Booking ${bookingId} has been APPROVED!`, "success");
+      this.showToast(`Rental contract ${bookingId} approved.`, "success");
       this.render();
     }
   }
@@ -625,7 +569,7 @@ class EquipTrackApp {
     if (b) {
       b.status = "CANCELLED";
       this.saveBookingsList(list);
-      this.showToast(`Booking ${bookingId} has been REJECTED.`, "danger");
+      this.showToast(`Rental contract ${bookingId} rejected.`, "danger");
       this.render();
     }
   }
@@ -636,7 +580,7 @@ class EquipTrackApp {
     if (eq) {
       eq.status = newStatus;
       this.saveEquipmentList(list);
-      this.showToast(`${eq.name} status updated to ${newStatus}`, "info");
+      this.showToast(`Fleet unit ${eq.code} status changed to ${newStatus}.`, "info");
       this.render();
     }
   }
@@ -654,10 +598,10 @@ class EquipTrackApp {
     const name = document.getElementById("newEqName").value.trim();
     const category = document.getElementById("newEqCategory").value;
     const location = document.getElementById("newEqLocation").value;
-    const rate = Number(document.getElementById("newEqRate").value) || 20000;
-    const mfg = document.getElementById("newEqMfg").value.trim() || "Caterpillar";
-    const model = document.getElementById("newEqModel").value.trim() || "Pro";
-    const desc = document.getElementById("newEqDesc").value.trim() || "Heavy machinery for professional earthworks.";
+    const rate = Number(document.getElementById("newEqRate").value) || 25000;
+    const mfg = document.getElementById("newEqMfg").value.trim() || "Komatsu";
+    const model = document.getElementById("newEqModel").value.trim() || "Standard Series";
+    const desc = document.getElementById("newEqDesc").value.trim() || "Heavy machinery unit for civil infrastructure.";
 
     const categoryObj = DEFAULT_CATEGORIES.find(c => c.id === category);
     const locationObj = DEFAULT_LOCATIONS.find(l => l.id === location);
@@ -665,24 +609,24 @@ class EquipTrackApp {
     const newEq = {
       id: "EQ0000" + Math.floor(10 + Math.random() * 90),
       name: name,
-      code: "EQ0000" + Math.floor(10 + Math.random() * 90),
+      code: "KOM-" + Math.floor(100 + Math.random() * 900),
       category: category,
       categoryName: categoryObj ? categoryObj.name : "Heavy Machinery",
       location: location,
-      locationName: locationObj ? locationObj.name : "Warehouse A",
+      locationName: locationObj ? locationObj.name : "Depot North",
       dailyRate: rate,
       weeklyRate: Math.round(rate * 6),
       securityDeposit: Math.round(rate * 4),
       status: "AVAILABLE",
-      condition: "EXCELLENT",
+      condition: "CERTIFIED",
       manufacturer: mfg,
       model: model,
       year: 2023,
-      operatingWeight: "15 Tonnes",
-      horsepower: "140 HP",
-      digDepth: "5.5 m",
+      operatingWeight: "16,500 kg",
+      horsepower: "150 HP",
+      digDepth: "5.8 meters",
+      fuelType: "Ultra-low Sulfur Diesel",
       description: desc,
-      svgType: "excavator",
       featured: true
     };
 
@@ -691,53 +635,44 @@ class EquipTrackApp {
     this.saveEquipmentList(list);
 
     this.closeAddEquipmentModal();
-    this.showToast(`Machine ${name} added to live fleet!`, "success");
+    this.showToast(`Fleet unit ${name} enrolled in inventory.`, "success");
     this.render();
   }
 
   cancelBooking(bookingId) {
-    if (confirm(`Are you sure you want to cancel booking ${bookingId}?`)) {
+    if (confirm(`Confirm cancellation of rental contract ${bookingId}?`)) {
       const list = this.getBookingsList();
       const b = list.find(x => x.id === bookingId);
       if (b) {
         b.status = "CANCELLED";
         this.saveBookingsList(list);
-        this.showToast(`Booking ${bookingId} cancelled successfully.`, "info");
+        this.showToast(`Contract ${bookingId} has been cancelled.`, "info");
         this.render();
       }
     }
   }
 
   downloadInvoice(bookingId) {
-    const list = this.getBookingsList();
-    const b = list.find(x => x.id === bookingId);
-    if (!b) return;
-
-    this.showToast(`Tax Invoice #${bookingId}.pdf generated and downloaded!`, "success");
+    this.showToast(`Commercial Contract Invoice #${bookingId}.pdf downloaded.`, "success");
   }
 
   showToast(message, type = "info") {
-    const container = document.getElementById("toastContainer");
-    if (!container) return;
+    const shelf = document.getElementById("toastShelf");
+    if (!shelf) return;
 
     const toast = document.createElement("div");
-    toast.className = `toast ${type}`;
-    let icon = "ℹ️";
-    if (type === "success") icon = "✅";
-    if (type === "danger") icon = "⚠️";
-
-    toast.innerHTML = `<span style="font-size: 1.2rem;">${icon}</span> <span>${message}</span>`;
-    container.appendChild(toast);
+    toast.className = `toast-message ${type}`;
+    toast.innerHTML = `<span>${message}</span>`;
+    shelf.appendChild(toast);
 
     setTimeout(() => {
       toast.style.opacity = "0";
-      toast.style.transform = "translateX(50px)";
-      toast.style.transition = "all 0.3s";
-      setTimeout(() => toast.remove(), 300);
-    }, 3500);
+      toast.style.transform = "translateY(6px)";
+      toast.style.transition = "all 0.2s";
+      setTimeout(() => toast.remove(), 200);
+    }, 3200);
   }
 
-  // --- Rendering Functions ---
   render() {
     this.renderRoleBar();
     this.renderNavbar();
@@ -745,35 +680,33 @@ class EquipTrackApp {
   }
 
   renderRoleBar() {
-    document.querySelectorAll(".role-btn").forEach(btn => {
+    document.querySelectorAll(".role-pill").forEach(btn => {
       btn.classList.toggle("active", btn.dataset.role === this.currentRole);
     });
 
     const activeLabel = document.getElementById("activePersonaLabel");
     if (activeLabel) {
       if (this.currentRole === "admin") {
-        activeLabel.textContent = "Admin (Sanjay - Fleet Director)";
+        activeLabel.textContent = "Fleet Operations Director (Admin)";
       } else if (this.currentRole === "customer") {
-        activeLabel.textContent = "Customer (Rajesh Sharma)";
+        activeLabel.textContent = "Apex Infrastructure Contractors (Commercial Account)";
       } else {
-        activeLabel.textContent = "Guest Visitor (Browse Mode)";
+        activeLabel.textContent = "Public Catalog Viewer";
       }
     }
   }
 
   renderNavbar() {
-    document.querySelectorAll(".nav-tab").forEach(tab => {
+    document.querySelectorAll(".tab-btn").forEach(tab => {
       tab.classList.toggle("active", tab.dataset.tab === this.currentTab);
     });
 
-    // Badge counts
     const myBookings = this.getBookingsList().filter(b => b.customerEmail === "customer@test.com" && b.status !== "CANCELLED");
     const badge = document.getElementById("myBookingsBadge");
     if (badge) {
       badge.textContent = myBookings.length;
     }
 
-    // Role visibility
     const customerLinks = document.getElementById("customerNavLinks");
     const adminLinks = document.getElementById("adminNavLinks");
     if (customerLinks) {
@@ -785,7 +718,6 @@ class EquipTrackApp {
   }
 
   renderActiveTab() {
-    // Hide all tabs
     document.querySelectorAll(".tab-view").forEach(view => {
       view.style.display = "none";
     });
@@ -822,7 +754,7 @@ class EquipTrackApp {
 
     const filtered = this.getFilteredEquipment();
     if (countBadge) {
-      countBadge.textContent = `${filtered.length} Machines Available`;
+      countBadge.textContent = `${filtered.length} Machines Listed`;
     }
 
     if (filtered.length === 0) {
@@ -836,64 +768,60 @@ class EquipTrackApp {
   }
 
   createEquipmentCardHTML(eq) {
-    const svg = SVG_ICONS[eq.svgType] || SVG_ICONS.loader;
     const isAvail = eq.status === "AVAILABLE";
 
     return `
-      <div class="equipment-card">
-        <div class="equipment-card-media">
-          <span class="equipment-category-tag">${eq.categoryName}</span>
-          <div class="equipment-status-top">
-            <span class="status-chip ${eq.status.toLowerCase()}">
-              <span class="status-chip-dot"></span> ${eq.status}
-            </span>
+      <article class="fleet-card">
+        <header class="fleet-card-header">
+          <div>
+            <span class="fleet-card-code">${eq.code}</span>
+            <h3 class="fleet-card-title">${eq.name}</h3>
+            <span class="fleet-card-mfg">${eq.manufacturer}</span>
           </div>
-          <div class="equipment-svg-container">
-            ${svg}
-          </div>
-        </div>
+          <span class="badge-status ${eq.status.toLowerCase()}">
+            <span class="badge-dot"></span> ${eq.status}
+          </span>
+        </header>
 
-        <div class="equipment-card-body">
-          <div class="equipment-card-title-row">
-            <div>
-              <h3>${eq.name}</h3>
-              <span class="equipment-code">${eq.manufacturer} • ${eq.model}</span>
-            </div>
+        <div class="fleet-card-body">
+          <div class="fleet-location-chip">
+            ${ICONS.mapPin}
+            <span>${eq.locationName}</span>
           </div>
 
-          <p class="equipment-card-desc">${eq.description}</p>
+          <p style="font-size: 0.85rem; color: var(--slate-600); line-height: 1.5; margin-bottom: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+            ${eq.description}
+          </p>
 
-          <div class="equipment-specs-grid">
-            <div class="spec-cell">
-              <span class="spec-key">Operating Wt</span>
-              <span class="spec-val">${eq.operatingWeight || 'Standard'}</span>
-            </div>
-            <div class="spec-cell">
-              <span class="spec-key">Horsepower</span>
-              <span class="spec-val">${eq.horsepower || 'Heavy'}</span>
-            </div>
-            <div class="spec-cell">
-              <span class="spec-key">Depot</span>
-              <span class="spec-val">${eq.locationName.split('(')[0]}</span>
-            </div>
-            <div class="spec-cell">
-              <span class="spec-key">Condition</span>
-              <span class="spec-val" style="color: var(--success);">${eq.condition}</span>
-            </div>
-          </div>
+          <table class="fleet-specs-table">
+            <tbody>
+              <tr>
+                <td class="spec-label">Operating Weight</td>
+                <td class="spec-value">${eq.operatingWeight || 'Standard'}</td>
+              </tr>
+              <tr>
+                <td class="spec-label">Gross Power</td>
+                <td class="spec-value">${eq.horsepower || 'Heavy Class'}</td>
+              </tr>
+              <tr>
+                <td class="spec-label">Dig Depth / Lift</td>
+                <td class="spec-value">${eq.digDepth || 'Standard'}</td>
+              </tr>
+            </tbody>
+          </table>
 
-          <div class="equipment-pricing-footer">
-            <div class="price-box">
-              <span class="price-sub">Daily Base Rate</span>
-              <span class="price-main">${this.formatCurrency(eq.dailyRate)} <small>/day</small></span>
+          <footer class="fleet-card-footer">
+            <div class="fleet-rate-group">
+              <span class="rate-label">Day Lease</span>
+              <span class="rate-number">${this.formatCurrency(eq.dailyRate)} <span class="rate-unit">/day</span></span>
             </div>
-            <button class="btn ${isAvail ? 'btn-primary' : 'btn-outline'}" 
+            <button class="btn ${isAvail ? 'btn-accent' : 'btn-outline'}" 
                     onclick="app.openEquipmentModal('${eq.id}')">
-              ${isAvail ? 'Reserve Fleet ⚡' : 'View Specs'}
+              ${isAvail ? 'Reserve Fleet' : 'View Specs'}
             </button>
-          </div>
+          </footer>
         </div>
-      </div>
+      </article>
     `;
   }
 
@@ -905,7 +833,6 @@ class EquipTrackApp {
     if (!tbody) return;
 
     const list = this.getBookingsList().filter(b => b.customerEmail === "customer@test.com");
-
     const activeCount = list.filter(b => b.status === "APPROVED" || b.status === "ACTIVE").length;
     const totalSpent = list.filter(b => b.status !== "CANCELLED").reduce((acc, b) => acc + b.total, 0);
 
@@ -922,36 +849,36 @@ class EquipTrackApp {
     tbody.innerHTML = list.map(b => {
       let statusClass = "available";
       if (b.status === "PENDING") statusClass = "rented";
-      if (b.status === "CANCELLED") statusClass = "maintenance";
+      if (b.status === "CANCELLED") statusClass = "cancelled";
 
       return `
         <tr>
           <td>
-            <strong>${b.id}</strong><br>
-            <small style="color: var(--gray-500);">${b.createdDate}</small>
+            <strong style="font-family: var(--font-mono);">${b.id}</strong><br>
+            <span style="font-size: 0.75rem; color: var(--slate-500);">${b.createdDate}</span>
           </td>
           <td>
             <strong>${b.equipmentName}</strong><br>
-            <small style="color: var(--gray-500);">📍 ${b.location}</small>
+            <span style="font-size: 0.75rem; color: var(--slate-500);">${b.location}</span>
           </td>
           <td>
             ${b.startDate} to ${b.endDate}<br>
-            <span style="font-size: 0.8rem; font-weight: 700; color: var(--primary-dark);">${b.days} Days</span>
+            <span style="font-size: 0.75rem; font-weight: 600; color: var(--dark-850);">${b.days} Days Contract</span>
           </td>
           <td>
-            <strong>${this.formatCurrency(b.total)}</strong><br>
-            <small style="color: var(--gray-500);">${b.pickupType}</small>
+            <strong style="font-family: var(--font-mono);">${this.formatCurrency(b.total)}</strong><br>
+            <span style="font-size: 0.75rem; color: var(--slate-500);">${b.pickupType}</span>
           </td>
           <td>
-            <span class="status-chip ${statusClass}">
-              <span class="status-chip-dot"></span> ${b.status}
+            <span class="badge-status ${statusClass}">
+              <span class="badge-dot"></span> ${b.status}
             </span>
           </td>
           <td>
             <div style="display: flex; gap: 0.4rem;">
-              <button class="btn btn-outline btn-sm" onclick="app.downloadInvoice('${b.id}')">📄 Receipt</button>
+              <button class="btn btn-outline btn-sm" onclick="app.downloadInvoice('${b.id}')">Contract PDF</button>
               ${b.status !== 'CANCELLED' ? `
-                <button class="btn btn-danger btn-sm" onclick="app.cancelBooking('${b.id}')">Cancel</button>
+                <button class="btn btn-danger-outline btn-sm" onclick="app.cancelBooking('${b.id}')">Cancel</button>
               ` : ''}
             </div>
           </td>
@@ -964,10 +891,8 @@ class EquipTrackApp {
     const bookings = this.getBookingsList();
     const equipment = this.getEquipmentList();
 
-    // Stats
     const totalRev = bookings.filter(b => b.status !== "CANCELLED").reduce((acc, b) => acc + b.total, 0);
     const activeRentals = bookings.filter(b => b.status === "APPROVED" || b.status === "ACTIVE").length;
-    const maintenanceCount = equipment.filter(e => e.status === "MAINTENANCE").length;
     const pendingApprovals = bookings.filter(b => b.status === "PENDING").length;
 
     const revEl = document.getElementById("adminTotalRevenue");
@@ -980,34 +905,31 @@ class EquipTrackApp {
     if (activeEl) activeEl.textContent = activeRentals;
     if (pendingEl) pendingEl.textContent = pendingApprovals;
 
-    // Approvals Table
     const approvalTbody = document.getElementById("adminApprovalsTableBody");
     if (approvalTbody) {
       if (bookings.length === 0) {
-        approvalTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--gray-500); padding: 2rem;">No bookings recorded yet.</td></tr>`;
+        approvalTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--slate-500); padding: 2rem;">No contracts on record.</td></tr>`;
       } else {
         approvalTbody.innerHTML = bookings.map(b => {
           let statusClass = "available";
           if (b.status === "PENDING") statusClass = "rented";
-          if (b.status === "CANCELLED") statusClass = "maintenance";
+          if (b.status === "CANCELLED") statusClass = "cancelled";
 
           return `
             <tr>
-              <td><strong>${b.id}</strong></td>
-              <td>${b.customerName}<br><small style="color: var(--gray-500);">${b.customerEmail}</small></td>
+              <td><strong style="font-family: var(--font-mono);">${b.id}</strong></td>
+              <td>${b.customerName}<br><span style="font-size: 0.75rem; color: var(--slate-500);">${b.customerEmail}</span></td>
               <td><strong>${b.equipmentName}</strong></td>
               <td>${b.startDate} to ${b.endDate} (${b.days}d)</td>
-              <td><strong>${this.formatCurrency(b.total)}</strong></td>
-              <td>
-                <span class="status-chip ${statusClass}">${b.status}</span>
-              </td>
+              <td><strong style="font-family: var(--font-mono);">${this.formatCurrency(b.total)}</strong></td>
+              <td><span class="badge-status ${statusClass}">${b.status}</span></td>
               <td>
                 <div style="display: flex; gap: 0.35rem;">
                   ${b.status === 'PENDING' ? `
-                    <button class="btn btn-success btn-sm" onclick="app.approveBooking('${b.id}')">✓ Approve</button>
-                    <button class="btn btn-danger btn-sm" onclick="app.rejectBooking('${b.id}')">✕ Reject</button>
+                    <button class="btn btn-success btn-sm" onclick="app.approveBooking('${b.id}')">Approve</button>
+                    <button class="btn btn-danger-outline btn-sm" onclick="app.rejectBooking('${b.id}')">Decline</button>
                   ` : `
-                    <span style="font-size: 0.8rem; color: var(--gray-500);">Completed</span>
+                    <span style="font-size: 0.75rem; color: var(--slate-500);">Confirmed</span>
                   `}
                 </div>
               </td>
@@ -1017,28 +939,27 @@ class EquipTrackApp {
       }
     }
 
-    // Equipment Fleet Table
     const fleetTbody = document.getElementById("adminFleetTableBody");
     if (fleetTbody) {
       fleetTbody.innerHTML = equipment.map(eq => `
         <tr>
-          <td><strong>${eq.code}</strong></td>
+          <td><strong style="font-family: var(--font-mono);">${eq.code}</strong></td>
           <td>
             <strong>${eq.name}</strong><br>
-            <small style="color: var(--gray-500);">${eq.categoryName} • ${eq.manufacturer}</small>
+            <span style="font-size: 0.75rem; color: var(--slate-500);">${eq.categoryName} • ${eq.manufacturer}</span>
           </td>
-          <td>${eq.locationName.split('(')[0]}</td>
-          <td><strong>${this.formatCurrency(eq.dailyRate)}/d</strong></td>
+          <td>${eq.locationName}</td>
+          <td><strong style="font-family: var(--font-mono);">${this.formatCurrency(eq.dailyRate)}</strong></td>
           <td>
-            <select class="form-control" style="padding: 0.3rem 0.5rem; font-size: 0.82rem; width: auto;" 
+            <select class="select-compact" style="padding: 0.25rem 0.5rem; font-size: 0.78rem; min-width: 140px;" 
                     onchange="app.toggleEquipmentStatus('${eq.id}', this.value)">
-              <option value="AVAILABLE" ${eq.status === 'AVAILABLE' ? 'selected' : ''}>🟢 AVAILABLE</option>
-              <option value="RENTED" ${eq.status === 'RENTED' ? 'selected' : ''}>🟠 RENTED</option>
-              <option value="MAINTENANCE" ${eq.status === 'MAINTENANCE' ? 'selected' : ''}>🔴 MAINTENANCE</option>
+              <option value="AVAILABLE" ${eq.status === 'AVAILABLE' ? 'selected' : ''}>Available</option>
+              <option value="RENTED" ${eq.status === 'RENTED' ? 'selected' : ''}>On Lease</option>
+              <option value="MAINTENANCE" ${eq.status === 'MAINTENANCE' ? 'selected' : ''}>Maintenance</option>
             </select>
           </td>
           <td>
-            <button class="btn btn-outline btn-sm" onclick="app.openEquipmentModal('${eq.id}')">View Details</button>
+            <button class="btn btn-outline btn-sm" onclick="app.openEquipmentModal('${eq.id}')">Specs</button>
           </td>
         </tr>
       `).join("");
@@ -1046,17 +967,14 @@ class EquipTrackApp {
   }
 
   bindEvents() {
-    // Role switcher
-    document.querySelectorAll(".role-btn").forEach(btn => {
+    document.querySelectorAll(".role-pill").forEach(btn => {
       btn.addEventListener("click", () => this.setRole(btn.dataset.role));
     });
 
-    // Navigation tabs
-    document.querySelectorAll(".nav-tab").forEach(tab => {
+    document.querySelectorAll(".tab-btn").forEach(tab => {
       tab.addEventListener("click", () => this.switchTab(tab.dataset.tab));
     });
 
-    // Search bar
     const searchInput = document.getElementById("catalogSearchInput");
     if (searchInput) {
       searchInput.addEventListener("input", (e) => {
@@ -1065,17 +983,15 @@ class EquipTrackApp {
       });
     }
 
-    // Category pills
-    document.querySelectorAll(".category-pill").forEach(pill => {
+    document.querySelectorAll(".filter-category-btn").forEach(pill => {
       pill.addEventListener("click", () => {
-        document.querySelectorAll(".category-pill").forEach(p => p.classList.remove("active"));
+        document.querySelectorAll(".filter-category-btn").forEach(p => p.classList.remove("active"));
         pill.classList.add("active");
         this.filters.category = pill.dataset.category;
         this.renderBrowseTab();
       });
     });
 
-    // Status filter
     const statusSelect = document.getElementById("catalogStatusFilter");
     if (statusSelect) {
       statusSelect.addEventListener("change", (e) => {
@@ -1084,7 +1000,6 @@ class EquipTrackApp {
       });
     }
 
-    // Location filter
     const locationSelect = document.getElementById("catalogLocationFilter");
     if (locationSelect) {
       locationSelect.addEventListener("change", (e) => {
@@ -1093,7 +1008,6 @@ class EquipTrackApp {
       });
     }
 
-    // Sort filter
     const sortSelect = document.getElementById("catalogSortFilter");
     if (sortSelect) {
       sortSelect.addEventListener("change", (e) => {
@@ -1102,7 +1016,6 @@ class EquipTrackApp {
       });
     }
 
-    // Modal date change events
     const startInput = document.getElementById("bookingStartDate");
     const endInput = document.getElementById("bookingEndDate");
     if (startInput && endInput) {
@@ -1112,7 +1025,6 @@ class EquipTrackApp {
   }
 }
 
-// Instantiate global app
 let app;
 document.addEventListener("DOMContentLoaded", () => {
   app = new EquipTrackApp();

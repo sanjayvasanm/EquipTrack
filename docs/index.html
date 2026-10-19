@@ -3,314 +3,293 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EquipTrack - Professional Construction Equipment Rental System</title>
-  <meta name="description" content="Industrial construction equipment rental management system. Instant booking, real-time fleet tracking, and automated heavy machinery reservations.">
+  <title>EquipTrack | Heavy Equipment Fleet & Industrial Rentals</title>
+  <meta name="description" content="Commercial construction machinery and heavy equipment rental management platform. Real-time fleet tracking, certified maintenance records, and project dispatch.">
   
-  <!-- Google Fonts -->
+  <!-- Modern Geometric Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   
   <!-- Stylesheet -->
   <link rel="stylesheet" href="./css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚜</text></svg>">
 </head>
 <body>
 
-  <!-- Top Construction Accent Stripe -->
-  <div class="hazard-bar"></div>
-
-  <!-- Live Demo Control Bar (Persona Switcher) -->
-  <aside class="demo-control-bar" aria-label="Demo Simulator Controls">
+  <!-- Top System & Workspace Context Bar -->
+  <aside class="top-system-bar" aria-label="System Environment">
     <div class="container">
-      <div class="demo-status-badge">
-        <span class="demo-status-dot"></span>
-        <span>LIVE SHOWCASE ACTIVE</span>
-        <span style="color: var(--gray-400); font-weight: 400;">|</span>
-        <span id="activePersonaLabel" style="color: var(--white); font-weight: 700;">Customer (Rajesh Sharma)</span>
+      <div class="system-status">
+        <span class="system-status-indicator"></span>
+        <span>Fleet Logistics Network: Operational</span>
+        <span class="system-env-tag" id="activePersonaLabel">Apex Infrastructure Contractors (Commercial Account)</span>
       </div>
 
-      <div class="role-switcher-group">
-        <span class="role-label">Switch Persona:</span>
-        <button class="role-btn" data-role="guest" id="btnRoleGuest" title="Simulate visitor experience">
-          <span>👤</span> Guest
-        </button>
-        <button class="role-btn active" data-role="customer" id="btnRoleCustomer" title="Simulate registered customer">
-          <span>👷</span> Customer
-        </button>
-        <button class="role-btn" data-role="admin" id="btnRoleAdmin" title="Simulate fleet manager with admin tools">
-          <span>👑</span> Admin
-        </button>
-      </div>
-
-      <div class="quick-actions-group">
-        <button class="btn-ghost-sm" onclick="app.resetAllData()" title="Reset local data to defaults">
-          🔄 Reset Demo Data
+      <div class="system-role-nav">
+        <span class="system-role-label">Workspace Context:</span>
+        <button class="role-pill" data-role="guest" id="btnRoleGuest">Public Catalog</button>
+        <button class="role-pill active" data-role="customer" id="btnRoleCustomer">Contractor Account</button>
+        <button class="role-pill" data-role="admin" id="btnRoleAdmin">Fleet Operations</button>
+        <button class="btn-reset-data" onclick="app.resetAllData()" title="Reset local data to defaults">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Reset Demo
         </button>
       </div>
     </div>
   </aside>
 
-  <!-- Sticky Navbar -->
-  <header class="navbar">
+  <!-- Corporate Navigation Header -->
+  <header class="header-nav">
     <div class="container">
-      <a href="javascript:void(0)" class="nav-brand" onclick="app.switchTab('home')" id="navBrandLink">
-        <div class="logo-badge">ET</div>
+      <div class="brand-wrapper" onclick="app.switchTab('home')" id="navBrandLink">
+        <div class="brand-mark">ET</div>
         <div class="brand-text">
           <h2>EquipTrack</h2>
-          <span class="brand-tag">Heavy Fleet Rentals</span>
+          <span class="brand-subtitle">Commercial Fleet Systems</span>
         </div>
-      </a>
+      </div>
 
-      <nav class="nav-links" aria-label="Main Navigation">
-        <button class="nav-tab active" data-tab="home" id="navTabHome">
-          <span>🏠</span> Home
-        </button>
-        <button class="nav-tab" data-tab="browse" id="navTabBrowse">
-          <span>🏗️</span> Browse Fleet
-        </button>
+      <nav class="main-tabs" aria-label="Primary Navigation">
+        <button class="tab-btn active" data-tab="home" id="navTabHome">Overview</button>
+        <button class="tab-btn" data-tab="browse" id="navTabBrowse">Fleet Catalog</button>
         
-        <!-- Customer Links -->
         <span id="customerNavLinks">
-          <button class="nav-tab" data-tab="bookings" id="navTabBookings">
-            <span>📋</span> My Rentals
-            <span class="nav-tab-badge" id="myBookingsBadge">2</span>
+          <button class="tab-btn" data-tab="bookings" id="navTabBookings">
+            Active Contracts
+            <span class="tab-count-badge" id="myBookingsBadge">2</span>
           </button>
         </span>
 
-        <!-- Admin Links -->
         <span id="adminNavLinks" style="display: none;">
-          <button class="nav-tab" data-tab="admin" id="navTabAdmin">
-            <span>📊</span> Fleet Operations
-          </button>
+          <button class="tab-btn" data-tab="admin" id="navTabAdmin">Fleet Operations</button>
         </span>
       </nav>
 
-      <div class="nav-cta">
-        <button class="btn btn-primary btn-sm" onclick="app.switchTab('browse')" id="navBtnRentNow">
-          Rent Equipment ⚡
+      <div class="header-action">
+        <button class="btn btn-accent btn-sm" onclick="app.switchTab('browse')" id="navBtnRentNow">
+          Request Equipment
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Main Content Area -->
+  <!-- Main Application Content -->
   <main id="appMainContent">
 
-    <!-- TAB 1: HOME SECTION -->
+    <!-- TAB 1: OVERVIEW / HOME -->
     <section id="tab-home" class="tab-view">
-      <!-- Hero Section -->
-      <div class="hero-section">
+      <!-- Commercial Hero -->
+      <div class="hero-commercial">
         <div class="container">
-          <div class="hero-badge">
-            <span>⚡ Heavy Machinery Fleet On-Demand</span>
+          <div class="hero-tag">
+            <span>Heavy Machinery & Industrial Equipment</span>
           </div>
-          <h1 class="hero-title">
-            Powering Mega Projects With <span class="highlight">Precision Fleet Rentals</span>
+          <h1 class="hero-heading">
+            Enterprise Fleet Logistics & Machinery Rental Operations
           </h1>
-          <p class="hero-desc">
-            Direct access to Caterpillar, JCB, and Liebherr heavy machinery. Real-time depot availability, instant operator dispatch, and transparent daily billing.
+          <p class="hero-subhead">
+            Direct access to Caterpillar, JCB, and Terex heavy equipment. Transparent daily contract rates, verified maintenance histories, and commercial dispatch to mega construction jobsites.
           </p>
 
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <button class="btn btn-primary" onclick="app.switchTab('browse')" id="heroBtnExplore">
-              🚜 Explore 50+ Heavy Machines
+          <div class="hero-actions">
+            <button class="btn btn-accent" onclick="app.switchTab('browse')" id="heroBtnExplore">
+              Browse Available Fleet
             </button>
-            <button class="btn btn-secondary" onclick="app.openEquipmentModal('EQ000001')" id="heroBtnFeatured">
-              ⚡ Quick Reserve CAT 320
+            <button class="btn btn-outline" onclick="app.openEquipmentModal('EQ000001')" id="heroBtnFeatured">
+              View CAT 320 Specs
             </button>
           </div>
 
-          <!-- Hero KPI Bar -->
-          <div class="hero-metrics-bar">
-            <div class="hero-metric-item">
+          <!-- Hero Metrics Bar -->
+          <div class="hero-metrics">
+            <div class="hero-metric-cell">
               <h4>150+</h4>
-              <p>Fleet Machines Ready</p>
+              <p>Certified Units Ready</p>
             </div>
-            <div class="hero-metric-item">
+            <div class="hero-metric-cell">
               <h4>99.4%</h4>
-              <p>Jobsite Uptime Guarantee</p>
+              <p>Jobsite Mechanical Uptime</p>
             </div>
-            <div class="hero-metric-item">
+            <div class="hero-metric-cell">
               <h4>3 Hubs</h4>
-              <p>NY, LA & Chicago Depots</p>
+              <p>NY, LA & Chicago Distribution</p>
             </div>
-            <div class="hero-metric-item">
+            <div class="hero-metric-cell">
               <h4>24/7</h4>
-              <p>Certified Field Mechanics</p>
+              <p>Field Service Engineering</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Featured Machinery Showcase -->
-      <section style="padding: 4.5rem 0; background: var(--white);">
+      <!-- Machinery Highlights -->
+      <section style="padding: 3.5rem 0; background: var(--white); border-bottom: 1px solid var(--slate-200);">
         <div class="container">
-          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
             <div>
-              <span style="color: var(--primary-dark); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem;">Ready For Immediate Dispatch</span>
-              <h2 style="font-size: 2.25rem; font-weight: 900; color: var(--secondary); margin-top: 0.25rem;">Featured Heavy Machinery</h2>
+              <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--brand-amber-dark);">Verified Fleet Inventory</span>
+              <h2 style="font-size: 1.75rem; margin-top: 0.2rem;">Featured Heavy Machinery</h2>
             </div>
-            <button class="btn btn-outline btn-sm" onclick="app.switchTab('browse')">View Full Catalog →</button>
+            <button class="btn btn-outline btn-sm" onclick="app.switchTab('browse')">View Full Inventory →</button>
           </div>
 
-          <div class="equipment-grid" id="homeFeaturedGrid">
-            <!-- Dynamically populated by app.js -->
+          <div class="fleet-grid" id="homeFeaturedGrid">
+            <!-- Populated by app.js -->
           </div>
         </div>
       </section>
 
-      <!-- How It Works Section -->
-      <section style="padding: 4.5rem 0; background: var(--gray-50); border-top: 1px solid var(--gray-200);">
+      <!-- Logistics Workflow -->
+      <section style="padding: 3.5rem 0; background: var(--slate-100);">
         <div class="container">
-          <div style="text-align: center; max-width: 650px; margin: 0 auto 3rem;">
-            <span style="color: var(--primary-dark); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem;">Seamless Logistics</span>
-            <h2 style="font-size: 2.25rem; font-weight: 900; color: var(--secondary); margin-top: 0.25rem;">Rental Workflow in 3 Steps</h2>
+          <div style="max-width: 600px; margin-bottom: 2.5rem;">
+            <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--slate-500);">Commercial Terms</span>
+            <h2 style="font-size: 1.75rem; margin-top: 0.2rem;">Deployment Protocol</h2>
           </div>
 
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
-            <div style="background: var(--white); padding: 2rem; border-radius: var(--radius-lg); border: 2px solid var(--gray-200); text-align: center;">
-              <div style="width: 60px; height: 60px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; margin: 0 auto 1.25rem; box-shadow: var(--shadow-yellow);">1</div>
-              <h3 style="font-size: 1.3rem; margin-bottom: 0.75rem;">Choose Machinery</h3>
-              <p style="color: var(--gray-600); font-size: 0.95rem;">Select from excavators, dozers, cranes, and compaction equipment tailored to your tonnage requirements.</p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+            <div style="background: var(--white); padding: 1.75rem; border-radius: var(--radius-md); border: 1px solid var(--slate-200); box-shadow: var(--shadow-card);">
+              <div style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--brand-amber-dark); font-weight: 700; margin-bottom: 0.5rem;">PHASE 01</div>
+              <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Technical Selection</h3>
+              <p style="color: var(--slate-600); font-size: 0.85rem; line-height: 1.6;">Filter by machine class, operating tonnage, boom height, and certified maintenance cycle.</p>
             </div>
 
-            <div style="background: var(--white); padding: 2rem; border-radius: var(--radius-lg); border: 2px solid var(--gray-200); text-align: center;">
-              <div style="width: 60px; height: 60px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; margin: 0 auto 1.25rem; box-shadow: var(--shadow-yellow);">2</div>
-              <h3 style="font-size: 1.3rem; margin-bottom: 0.75rem;">Schedule & Inspect</h3>
-              <p style="color: var(--gray-600); font-size: 0.95rem;">Lock in project duration with dynamic pricing and select warehouse pickup or heavy haul site delivery.</p>
+            <div style="background: var(--white); padding: 1.75rem; border-radius: var(--radius-md); border: 1px solid var(--slate-200); box-shadow: var(--shadow-card);">
+              <div style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--brand-amber-dark); font-weight: 700; margin-bottom: 0.5rem;">PHASE 02</div>
+              <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Contract & Scheduling</h3>
+              <p style="color: var(--slate-600); font-size: 0.85rem; line-height: 1.6;">Establish transparent daily or monthly commercial terms, jobsite drop-off logistics, and insurance verification.</p>
             </div>
 
-            <div style="background: var(--white); padding: 2rem; border-radius: var(--radius-lg); border: 2px solid var(--gray-200); text-align: center;">
-              <div style="width: 60px; height: 60px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; margin: 0 auto 1.25rem; box-shadow: var(--shadow-yellow);">3</div>
-              <h3 style="font-size: 1.3rem; margin-bottom: 0.75rem;">Power Your Build</h3>
-              <p style="color: var(--gray-600); font-size: 0.95rem;">Receive inspected machines on time with certified operators, insurance coverage, and 24/7 breakdown support.</p>
+            <div style="background: var(--white); padding: 1.75rem; border-radius: var(--radius-md); border: 1px solid var(--slate-200); box-shadow: var(--shadow-card);">
+              <div style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--brand-amber-dark); font-weight: 700; margin-bottom: 0.5rem;">PHASE 03</div>
+              <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Hauler Dispatch</h3>
+              <p style="color: var(--slate-600); font-size: 0.85rem; line-height: 1.6;">Heavy low-bed transport directly to your designated project gate with certified operating logs and fuel prep.</p>
             </div>
           </div>
         </div>
       </section>
     </section>
 
-    <!-- TAB 2: BROWSE CATALOG SECTION -->
-    <section id="tab-browse" class="tab-view" style="display: none; padding: 3rem 0;">
+    <!-- TAB 2: FLEET CATALOG -->
+    <section id="tab-browse" class="tab-view" style="display: none; padding: 2.5rem 0;">
       <div class="container">
-        <div style="margin-bottom: 2rem;">
-          <h1 style="font-size: 2.5rem; font-weight: 900; color: var(--secondary);">Industrial Equipment Fleet</h1>
-          <p style="color: var(--gray-600); font-size: 1.1rem;">Search and reserve available heavy machinery across our nationwide depots.</p>
+        <div style="margin-bottom: 1.75rem;">
+          <h1 style="font-size: 2rem;">Heavy Equipment Catalog</h1>
+          <p style="color: var(--slate-500); font-size: 0.95rem;">Real-time equipment availability across commercial logistics depots.</p>
         </div>
 
-        <!-- Filter & Search Toolbar -->
-        <div class="catalog-toolbar">
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <div class="search-input-wrapper">
-              <span class="search-icon">🔍</span>
-              <input type="text" id="catalogSearchInput" placeholder="Search by machine name, Caterpillar, JCB, model..." aria-label="Search Equipment">
+        <!-- Catalog Toolbar -->
+        <div class="catalog-panel">
+          <div class="catalog-search-row">
+            <div class="search-field">
+              <span class="search-field-icon">
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </span>
+              <input type="text" id="catalogSearchInput" placeholder="Search by manufacturer, machine model, or equipment code (e.g. Caterpillar, JCB, 320)..." aria-label="Search Fleet">
             </div>
           </div>
 
-          <!-- Category Pills -->
-          <div class="category-pills-bar" style="margin-top: 1.25rem; margin-bottom: 0;">
-            <button class="category-pill active" data-category="ALL"><span>🚜</span> All Machinery</button>
-            <button class="category-pill" data-category="CAT-HM"><span>⛏️</span> Heavy Machinery</button>
-            <button class="category-pill" data-category="CAT-MH"><span>🏗️</span> Material Handling</button>
-            <button class="category-pill" data-category="CAT-AL"><span>🪜</span> Aerial Lifts</button>
-            <button class="category-pill" data-category="CAT-CP"><span>🚜</span> Compaction</button>
-            <button class="category-pill" data-category="CAT-PT"><span>⚡</span> Power & Generators</button>
+          <!-- Category Filters -->
+          <div class="filter-pills-wrap">
+            <button class="filter-category-btn active" data-category="ALL">All Equipment</button>
+            <button class="filter-category-btn" data-category="CAT-HM">Heavy Machinery</button>
+            <button class="filter-category-btn" data-category="CAT-MH">Material Handling</button>
+            <button class="filter-category-btn" data-category="CAT-AL">Aerial Access</button>
+            <button class="filter-category-btn" data-category="CAT-CP">Compaction</button>
+            <button class="filter-category-btn" data-category="CAT-PT">Power Generation</button>
           </div>
 
-          <!-- Dropdown Selectors Row -->
-          <div class="filter-controls-row">
-            <select class="filter-select" id="catalogStatusFilter" aria-label="Filter by Status">
-              <option value="ALL">All Statuses</option>
-              <option value="AVAILABLE">🟢 Available Only</option>
-              <option value="RENTED">🟠 Currently Rented</option>
-              <option value="MAINTENANCE">🔴 Maintenance</option>
+          <!-- Detailed Dropdowns -->
+          <div class="catalog-dropdowns-row">
+            <select class="select-compact" id="catalogStatusFilter" aria-label="Filter Status">
+              <option value="ALL">All Operational Statuses</option>
+              <option value="AVAILABLE">Available for Lease</option>
+              <option value="RENTED">Currently on Site (Leased)</option>
+              <option value="MAINTENANCE">Scheduled Maintenance</option>
             </select>
 
-            <select class="filter-select" id="catalogLocationFilter" aria-label="Filter by Location">
-              <option value="ALL">All Hub Locations</option>
-              <option value="LOC-NY">📍 Warehouse A (East Hub - NY)</option>
-              <option value="LOC-LA">📍 Warehouse B (West Hub - LA)</option>
-              <option value="LOC-CH">📍 Midwest Depot (Chicago)</option>
+            <select class="select-compact" id="catalogLocationFilter" aria-label="Filter Location">
+              <option value="ALL">All Distribution Depots</option>
+              <option value="LOC-NY">Depot North - East Hub (New York)</option>
+              <option value="LOC-LA">Depot West - Pacific Hub (Los Angeles)</option>
+              <option value="LOC-CH">Depot Central - Midwest Yard (Chicago)</option>
             </select>
 
-            <select class="filter-select" id="catalogSortFilter" aria-label="Sort Equipment">
-              <option value="FEATURED">Sort: Featured First</option>
-              <option value="PRICE_ASC">Price: Low to High</option>
-              <option value="PRICE_DESC">Price: High to Low</option>
-              <option value="NAME_ASC">Name: A to Z</option>
+            <select class="select-compact" id="catalogSortFilter" aria-label="Sort Equipment">
+              <option value="FEATURED">Order: Priority Featured</option>
+              <option value="PRICE_ASC">Daily Rate: Low to High</option>
+              <option value="PRICE_DESC">Daily Rate: High to Low</option>
+              <option value="NAME_ASC">Alphabetical: A to Z</option>
             </select>
           </div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-          <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--secondary);" id="catalogResultsCount">
-            Loading Available Fleet...
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+          <h2 style="font-size: 1rem; color: var(--slate-600); font-weight: 600;" id="catalogResultsCount">
+            Loading Fleet Registry...
           </h2>
         </div>
 
-        <!-- Equipment Grid -->
-        <div class="equipment-grid" id="browseEquipmentGrid">
+        <!-- Fleet Cards Grid -->
+        <div class="fleet-grid" id="browseEquipmentGrid">
           <!-- Populated by app.js -->
         </div>
 
         <!-- Empty State -->
-        <div id="browseEmptyState" style="display: none; text-align: center; padding: 4rem 2rem; background: var(--white); border-radius: var(--radius-lg); border: 2px dashed var(--gray-300);">
-          <div style="font-size: 3.5rem; margin-bottom: 1rem;">🚜</div>
-          <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">No Equipment Matches Your Criteria</h3>
-          <p style="color: var(--gray-600); margin-bottom: 1.5rem;">Try relaxing your search terms or clearing status filters.</p>
-          <button class="btn btn-primary" onclick="app.resetAllData()">Reset Filters & Data</button>
+        <div id="browseEmptyState" style="display: none; text-align: center; padding: 4rem 2rem; background: var(--white); border-radius: var(--radius-md); border: 1px dashed var(--slate-300);">
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">No Fleet Units Match Selected Filters</h3>
+          <p style="color: var(--slate-500); margin-bottom: 1.25rem; font-size: 0.9rem;">Adjust search terms, remove specific category filters, or reset depot locations.</p>
+          <button class="btn btn-outline btn-sm" onclick="app.resetAllData()">Reset Filters & Inventory</button>
         </div>
       </div>
     </section>
 
-    <!-- TAB 3: CUSTOMER BOOKINGS SECTION -->
-    <section id="tab-bookings" class="tab-view" style="display: none; padding: 3rem 0;">
+    <!-- TAB 3: CONTRACTOR BOOKINGS -->
+    <section id="tab-bookings" class="tab-view" style="display: none; padding: 2.5rem 0;">
       <div class="container">
-        <div style="margin-bottom: 2rem;">
-          <h1 style="font-size: 2.5rem; font-weight: 900; color: var(--secondary);">My Equipment Bookings</h1>
-          <p style="color: var(--gray-600); font-size: 1.1rem;">Track your active reservations, deployment timelines, and rental billing.</p>
+        <div style="margin-bottom: 1.75rem;">
+          <h1 style="font-size: 2rem;">Contractor Rental Portfolio</h1>
+          <p style="color: var(--slate-500); font-size: 0.95rem;">Active jobsite deployments, lease contracts, and commercial documentation.</p>
         </div>
 
-        <!-- KPI Summary Cards -->
-        <div class="kpi-grid">
-          <div class="kpi-card">
-            <div class="kpi-icon">📋</div>
-            <div class="kpi-info">
-              <h4 id="myBookingsActiveCount">2</h4>
-              <p>Active Deployments</p>
+        <div class="metrics-row">
+          <div class="metric-card">
+            <div class="metric-header">
+              <span>Active Deployments</span>
             </div>
+            <div class="metric-value" id="myBookingsActiveCount">2</div>
+            <div class="metric-subtext">Operating on scheduled job sites</div>
           </div>
-          <div class="kpi-card">
-            <div class="kpi-icon">💰</div>
-            <div class="kpi-info">
-              <h4 id="myBookingsTotalSpent">₹3,75,375</h4>
-              <p>Total Rental Value</p>
+          <div class="metric-card">
+            <div class="metric-header">
+              <span>Committed Contract Value</span>
             </div>
+            <div class="metric-value" id="myBookingsTotalSpent">₹3,75,375</div>
+            <div class="metric-subtext">Cumulative authorized lease value</div>
           </div>
-          <div class="kpi-card">
-            <div class="kpi-icon">🛡️</div>
-            <div class="kpi-info">
-              <h4>100%</h4>
-              <p>Insurance Coverage</p>
+          <div class="metric-card">
+            <div class="metric-header">
+              <span>Compliance & Safety</span>
             </div>
+            <div class="metric-value">Verified</div>
+            <div class="metric-subtext">Commercial liability & insurance active</div>
           </div>
         </div>
 
-        <!-- Bookings Data Table -->
-        <div class="data-table-wrapper">
-          <div class="data-table-header">
-            <h3 style="font-size: 1.25rem;">Active & Historic Reservations</h3>
-            <button class="btn btn-primary btn-sm" onclick="app.switchTab('browse')">+ New Reservation</button>
+        <!-- Contracts Table -->
+        <div class="data-panel">
+          <div class="data-panel-titlebar">
+            <h3 style="font-size: 1.05rem;">Current & Historic Equipment Contracts</h3>
+            <button class="btn btn-accent btn-sm" onclick="app.switchTab('browse')">+ New Lease Contract</button>
           </div>
-          <div class="table-responsive">
-            <table class="custom-table">
+          <div class="data-table-scroll">
+            <table class="enterprise-table">
               <thead>
                 <tr>
-                  <th>Booking ID</th>
-                  <th>Machine Details</th>
-                  <th>Duration</th>
-                  <th>Total Cost</th>
+                  <th>Contract ID</th>
+                  <th>Machinery & Depot</th>
+                  <th>Lease Duration</th>
+                  <th>Total Committed</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
@@ -320,75 +299,75 @@
               </tbody>
             </table>
           </div>
-          <div id="myBookingsEmpty" style="display: none; padding: 3rem; text-align: center; color: var(--gray-500);">
-            No rental bookings found under this account.
+          <div id="myBookingsEmpty" style="display: none; padding: 2.5rem; text-align: center; color: var(--slate-500); font-size: 0.9rem;">
+            No rental contracts found for this account.
           </div>
         </div>
       </div>
     </section>
 
-    <!-- TAB 4: ADMIN OPERATIONS SECTION -->
-    <section id="tab-admin" class="tab-view" style="display: none; padding: 3rem 0;">
+    <!-- TAB 4: ADMIN OPERATIONS CONSOLE -->
+    <section id="tab-admin" class="tab-view" style="display: none; padding: 2.5rem 0;">
       <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;">
           <div>
-            <h1 style="font-size: 2.5rem; font-weight: 900; color: var(--secondary);">Fleet Operations Console</h1>
-            <p style="color: var(--gray-600); font-size: 1.1rem;">Manage machinery inventory, approve rental contracts, and monitor revenue.</p>
+            <h1 style="font-size: 2rem;">Fleet Operations Console</h1>
+            <p style="color: var(--slate-500); font-size: 0.95rem;">Machinery inventory control, commercial contract sign-offs, and maintenance schedules.</p>
           </div>
-          <button class="btn btn-primary" onclick="app.openAddEquipmentModal()" id="btnAdminAddEq">
-            + Add New Machine
+          <button class="btn btn-accent btn-sm" onclick="app.openAddEquipmentModal()" id="btnAdminAddEq">
+            + Enroll Machinery Unit
           </button>
         </div>
 
-        <!-- Operations KPI Grid -->
-        <div class="kpi-grid">
-          <div class="kpi-card">
-            <div class="kpi-icon">💵</div>
-            <div class="kpi-info">
-              <h4 id="adminTotalRevenue">₹10,62,600</h4>
-              <p>Total Revenue Booked</p>
+        <!-- KPI Metrics Grid -->
+        <div class="metrics-row">
+          <div class="metric-card">
+            <div class="metric-header">
+              <span>Net Contract Value</span>
             </div>
+            <div class="metric-value" id="adminTotalRevenue">₹10,62,600</div>
+            <div class="metric-subtext">Recognized across all depots</div>
           </div>
-          <div class="kpi-card">
-            <div class="kpi-icon">🚜</div>
-            <div class="kpi-info">
-              <h4 id="adminFleetTotal">8</h4>
-              <p>Total Fleet Units</p>
+          <div class="metric-card">
+            <div class="metric-header">
+              <span>Total Fleet Units</span>
             </div>
+            <div class="metric-value" id="adminFleetTotal">8</div>
+            <div class="metric-subtext">Monitored across 3 hubs</div>
           </div>
-          <div class="kpi-card">
-            <div class="kpi-icon">⚡</div>
-            <div class="kpi-info">
-              <h4 id="adminActiveRentals">2</h4>
-              <p>Machines On Jobsites</p>
+          <div class="metric-card">
+            <div class="metric-header">
+              <span>On-Site Deployments</span>
             </div>
+            <div class="metric-value" id="adminActiveRentals">2</div>
+            <div class="metric-subtext">Currently generating billing</div>
           </div>
-          <div class="kpi-card">
-            <div class="kpi-icon">⏳</div>
-            <div class="kpi-info">
-              <h4 id="adminPendingApprovals">1</h4>
-              <p>Pending Approvals</p>
+          <div class="metric-card">
+            <div class="metric-header">
+              <span>Awaiting Sign-off</span>
             </div>
+            <div class="metric-value" id="adminPendingApprovals">1</div>
+            <div class="metric-subtext">Pending dispatcher review</div>
           </div>
         </div>
 
-        <!-- Rental Approvals Table -->
-        <div class="data-table-wrapper">
-          <div class="data-table-header">
-            <h3 style="font-size: 1.25rem;">Rental Approval Pipeline</h3>
-            <span style="font-size: 0.85rem; color: var(--gray-500);">Live contract management</span>
+        <!-- Contract Approval Pipeline -->
+        <div class="data-panel">
+          <div class="data-panel-titlebar">
+            <h3 style="font-size: 1.05rem;">Commercial Contract Sign-off Queue</h3>
+            <span style="font-size: 0.75rem; color: var(--slate-500);">Awaiting dispatcher confirmation</span>
           </div>
-          <div class="table-responsive">
-            <table class="custom-table">
+          <div class="data-table-scroll">
+            <table class="enterprise-table">
               <thead>
                 <tr>
-                  <th>Booking ID</th>
-                  <th>Customer</th>
-                  <th>Equipment</th>
+                  <th>Contract ID</th>
+                  <th>Contractor Client</th>
+                  <th>Machine Unit</th>
                   <th>Duration</th>
-                  <th>Total Amount</th>
+                  <th>Lease Value</th>
                   <th>Status</th>
-                  <th>Action</th>
+                  <th>Review Decision</th>
                 </tr>
               </thead>
               <tbody id="adminApprovalsTableBody">
@@ -398,22 +377,22 @@
           </div>
         </div>
 
-        <!-- Fleet Inventory Quick Status Manager -->
-        <div class="data-table-wrapper">
-          <div class="data-table-header">
-            <h3 style="font-size: 1.25rem;">Fleet Units & Maintenance Status</h3>
-            <span style="font-size: 0.85rem; color: var(--gray-500);">Instant status override</span>
+        <!-- Inventory Status Manager -->
+        <div class="data-panel">
+          <div class="data-panel-titlebar">
+            <h3 style="font-size: 1.05rem;">Fleet Registry & Maintenance Status</h3>
+            <span style="font-size: 0.75rem; color: var(--slate-500);">Live status override</span>
           </div>
-          <div class="table-responsive">
-            <table class="custom-table">
+          <div class="data-table-scroll">
+            <table class="enterprise-table">
               <thead>
                 <tr>
-                  <th>Code</th>
-                  <th>Equipment Name</th>
-                  <th>Location</th>
-                  <th>Daily Rate</th>
-                  <th>Status Toggle</th>
-                  <th>Action</th>
+                  <th>Unit Code</th>
+                  <th>Equipment Description</th>
+                  <th>Distribution Depot</th>
+                  <th>Daily Standard</th>
+                  <th>Fleet Status</th>
+                  <th>Specifications</th>
                 </tr>
               </thead>
               <tbody id="adminFleetTableBody">
@@ -427,238 +406,256 @@
 
   </main>
 
-  <!-- MODAL: Equipment Details & Dynamic Cost Calculator -->
+  <!-- MODAL: Equipment Details & Lease Cost Calculator -->
   <div class="modal-overlay" id="equipmentDetailsModal" aria-hidden="true">
-    <div class="modal-content">
-      <div class="modal-header">
+    <div class="modal-window">
+      <div class="modal-top-bar">
         <div>
-          <span class="equipment-code" id="modalEqCode">EQ000001</span>
-          <h2 style="font-size: 1.6rem; font-weight: 800; margin-top: 0.25rem;" id="modalEqName">Excavator CAT 320</h2>
+          <span class="fleet-card-code" id="modalEqCode">CAT-320D3</span>
+          <h2 style="font-size: 1.35rem; margin-top: 0.15rem;" id="modalEqName">Caterpillar 320 Hydraulic Excavator</h2>
+          <span style="font-size: 0.8rem; color: var(--slate-500);" id="modalEqMfg">Caterpillar Inc.</span>
         </div>
-        <button class="modal-close-btn" onclick="app.closeEquipmentModal()" aria-label="Close modal">✕</button>
+        <button class="modal-close-icon-btn" onclick="app.closeEquipmentModal()" aria-label="Close dialog">
+          <svg class="icon icon-lg" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
 
-      <div class="modal-body">
-        <div style="display: flex; gap: 1.5rem; align-items: center; background: var(--gray-900); padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem; color: var(--white);">
-          <div id="modalEqSvgSlot" style="width: 120px; height: 90px; flex-shrink: 0;"></div>
-          <div>
-            <div style="display: flex; gap: 0.5rem; margin-bottom: 0.4rem; align-items: center;">
-              <span id="modalEqCategory" style="color: var(--primary); font-weight: 700; font-size: 0.85rem;">Heavy Machinery</span>
-              <span>•</span>
-              <span id="modalEqStatus" class="status-chip available"><span class="status-chip-dot"></span> AVAILABLE</span>
-            </div>
-            <p id="modalEqDesc" style="color: var(--gray-300); font-size: 0.92rem; line-height: 1.5;">Description goes here.</p>
+      <div class="modal-content-area">
+        <div style="display: flex; gap: 0.6rem; align-items: center; margin-bottom: 1.25rem;">
+          <span id="modalEqCategory" style="font-size: 0.8rem; font-weight: 600; color: var(--brand-amber-dark); background: var(--brand-amber-subtle); padding: 0.2rem 0.5rem; border-radius: var(--radius-xs);">Heavy Machinery</span>
+          <span id="modalEqStatus" class="badge-status available"><span class="badge-dot"></span> AVAILABLE</span>
+        </div>
+
+        <p id="modalEqDesc" style="color: var(--slate-600); font-size: 0.88rem; line-height: 1.6; margin-bottom: 1.5rem;">
+          Equipment technical description.
+        </p>
+
+        <!-- Technical Specification Sheet -->
+        <h3 style="font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--slate-600); margin-bottom: 0.6rem;">
+          Engineering Specifications
+        </h3>
+        <table class="fleet-specs-table" style="background: var(--slate-50); padding: 0.75rem 1rem; border: 1px solid var(--slate-200); border-radius: var(--radius-sm); margin-bottom: 1.5rem;">
+          <tbody>
+            <tr>
+              <td class="spec-label">Operating Weight</td>
+              <td class="spec-value" id="modalEqWeight">22,500 kg</td>
+            </tr>
+            <tr>
+              <td class="spec-label">Gross Engine Output</td>
+              <td class="spec-value" id="modalEqHP">174 HP</td>
+            </tr>
+            <tr>
+              <td class="spec-label">Max Digging Depth / Reach</td>
+              <td class="spec-value" id="modalEqDepth">6.72 meters</td>
+            </tr>
+            <tr>
+              <td class="spec-label">Fuel Specification</td>
+              <td class="spec-value" id="modalEqFuel">Ultra-low Sulfur Diesel</td>
+            </tr>
+            <tr>
+              <td class="spec-label">Manufacturing Year</td>
+              <td class="spec-value" id="modalEqYear">2022</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Depot Logistics Information -->
+        <div style="background: var(--slate-100); border: 1px solid var(--slate-200); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.82rem;">
+          <strong style="color: var(--dark-900);">Home Distribution Depot:</strong>
+          <span id="modalEqLocation" style="color: var(--slate-700); margin-left: 0.35rem;">Depot North - East Hub</span>
+        </div>
+
+        <!-- Schedule & Lease Calculation -->
+        <h3 style="font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--slate-600); margin-bottom: 0.6rem;">
+          Lease Period & Itemized Estimate
+        </h3>
+        
+        <div class="form-row-2">
+          <div class="form-element">
+            <label class="form-label" for="bookingStartDate">Mobilization Date</label>
+            <input type="date" class="form-input" id="bookingStartDate">
+          </div>
+          <div class="form-element">
+            <label class="form-label" for="bookingEndDate">Demobilization Date</label>
+            <input type="date" class="form-input" id="bookingEndDate">
           </div>
         </div>
 
-        <!-- Specs Sheet -->
-        <h3 style="font-size: 1.1rem; margin-bottom: 0.75rem;">Machine Specifications</h3>
-        <div class="equipment-specs-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 1.5rem;">
-          <div class="spec-cell">
-            <span class="spec-key">Operating Wt</span>
-            <span class="spec-val" id="modalEqWeight">22.5 T</span>
-          </div>
-          <div class="spec-cell">
-            <span class="spec-key">Engine Power</span>
-            <span class="spec-val" id="modalEqHP">174 HP</span>
-          </div>
-          <div class="spec-cell">
-            <span class="spec-key">Dig Depth</span>
-            <span class="spec-val" id="modalEqDepth">6.72 m</span>
-          </div>
-          <div class="spec-cell">
-            <span class="spec-key">Model Year</span>
-            <span class="spec-val" id="modalEqYear">2021</span>
-          </div>
-        </div>
+        <!-- Cost Breakdown Table -->
+        <table class="cost-breakdown-table">
+          <tbody>
+            <tr>
+              <td class="row-key">Standard Day Rate</td>
+              <td class="row-val" id="modalEqRate">₹38,250</td>
+            </tr>
+            <tr>
+              <td class="row-key">Weekly Discount Base</td>
+              <td class="row-val" id="modalEqWeekly">₹2,38,000 / week</td>
+            </tr>
+            <tr>
+              <td class="row-key">Lease Duration</td>
+              <td class="row-val" id="calcDays">6 Days</td>
+            </tr>
+            <tr>
+              <td class="row-key">Base Lease Subtotal</td>
+              <td class="row-val" id="calcSubtotal">₹2,29,500</td>
+            </tr>
+            <tr>
+              <td class="row-key">Statutory GST / Tax (5%)</td>
+              <td class="row-val" id="calcTax">₹11,475</td>
+            </tr>
+            <tr>
+              <td class="row-key">Refundable Equipment Deposit</td>
+              <td class="row-val" id="modalEqDeposit">₹1,70,000</td>
+            </tr>
+            <tr class="row-total">
+              <td>Total Authorized Amount</td>
+              <td class="row-val" id="calcTotal">₹2,40,975</td>
+            </tr>
+          </tbody>
+        </table>
 
-        <!-- Depot Info -->
-        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-          <strong style="color: #065F46; font-size: 0.9rem;">📍 Stationed Location:</strong>
-          <span id="modalEqLocation" style="color: var(--secondary); font-weight: 700; margin-left: 0.3rem;">Warehouse A (East Hub)</span>
-        </div>
-
-        <!-- Interactive Pricing Calculator -->
-        <h3 style="font-size: 1.1rem; margin-bottom: 0.75rem;">Rental Date Selection & Cost Breakdown</h3>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="bookingStartDate">Pickup Date</label>
-            <input type="date" class="form-control" id="bookingStartDate">
-          </div>
-          <div class="form-group">
-            <label for="bookingEndDate">Return Date</label>
-            <input type="date" class="form-control" id="bookingEndDate">
-          </div>
-        </div>
-
-        <div class="calc-breakdown-box">
-          <div class="calc-row">
-            <span>Daily Base Rate:</span>
-            <span id="modalEqRate">₹38,250</span>
-          </div>
-          <div class="calc-row">
-            <span>Weekly Rate Discount:</span>
-            <span id="modalEqWeekly">₹2,38,000 / week</span>
-          </div>
-          <div class="calc-row">
-            <span>Duration:</span>
-            <strong id="calcDays">6 Days</strong>
-          </div>
-          <div class="calc-row">
-            <span>Subtotal:</span>
-            <span id="calcSubtotal">₹2,29,500</span>
-          </div>
-          <div class="calc-row">
-            <span>GST / Taxes (5%):</span>
-            <span id="calcTax">₹11,475</span>
-          </div>
-          <div class="calc-row">
-            <span>Refundable Deposit:</span>
-            <span id="modalEqDeposit">₹1,70,000</span>
-          </div>
-          <div class="calc-row total">
-            <span>Total Payable:</span>
-            <span id="calcTotal">₹2,40,975</span>
-          </div>
-        </div>
-
-        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
           <button class="btn btn-outline" onclick="app.closeEquipmentModal()">Close</button>
-          <button class="btn btn-primary" id="btnProceedCheckout" onclick="app.proceedToCheckout()">
-            Reserve Now ⚡
+          <button class="btn btn-accent" id="btnProceedCheckout" onclick="app.proceedToCheckout()">
+            Proceed to Reservation
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: Checkout & Confirmation Wizard -->
+  <!-- MODAL: Checkout & Dispatch Order -->
   <div class="modal-overlay" id="checkoutModal" aria-hidden="true">
-    <div class="modal-content">
-      <div class="modal-header">
+    <div class="modal-window">
+      <div class="modal-top-bar">
         <div>
-          <h2 style="font-size: 1.5rem; font-weight: 800;">Confirm Fleet Reservation</h2>
-          <span style="font-size: 0.85rem; color: var(--gray-500);">Step 2: Logistics & Payment</span>
+          <h2 style="font-size: 1.35rem;">Authorize Equipment Dispatch</h2>
+          <span style="font-size: 0.78rem; color: var(--slate-500);">Commercial Logistics & Site Delivery Details</span>
         </div>
-        <button class="modal-close-btn" onclick="app.closeCheckoutModal()" aria-label="Close modal">✕</button>
+        <button class="modal-close-icon-btn" onclick="app.closeCheckoutModal()" aria-label="Close dialog">
+          <svg class="icon icon-lg" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
 
-      <div class="modal-body">
-        <div style="background: var(--gray-50); padding: 1rem 1.25rem; border-radius: var(--radius-md); border-left: 4px solid var(--primary); margin-bottom: 1.5rem;">
-          <h4 id="checkoutMachineName" style="font-size: 1.15rem; margin-bottom: 0.25rem;">Machine Name</h4>
-          <p id="checkoutDuration" style="font-size: 0.9rem; color: var(--gray-600);">6 Days Rental</p>
-          <div style="margin-top: 0.5rem; font-size: 1.25rem; font-weight: 900; color: var(--secondary);">
-            Amount: <span id="checkoutTotalPayable">₹2,40,975</span>
+      <div class="modal-content-area">
+        <div style="background: var(--slate-50); border: 1px solid var(--slate-200); border-left: 3px solid var(--brand-amber); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+          <strong id="checkoutMachineName" style="display: block; font-size: 1rem; color: var(--dark-900);">Machine Description</strong>
+          <span id="checkoutDuration" style="font-size: 0.82rem; color: var(--slate-600);">Lease Term</span>
+          <div style="font-size: 1.15rem; font-weight: 800; font-family: var(--font-mono); color: var(--dark-900); margin-top: 0.35rem;">
+            Commitment: <span id="checkoutTotalPayable">₹2,40,975</span>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="checkoutDeliveryOption">Delivery & Logistics Method</label>
-          <select class="form-control" id="checkoutDeliveryOption">
-            <option value="Heavy Delivery">🚛 Low-Bed Heavy Haul Delivery to Jobsite (+Included)</option>
-            <option value="Warehouse Pickup">🏢 Customer Pickup at Regional Depot</option>
+        <div class="form-element">
+          <label class="form-label" for="checkoutDeliveryOption">Dispatch Protocol</label>
+          <select class="form-select" id="checkoutDeliveryOption">
+            <option value="Commercial Hauler Dispatch">Commercial Low-bed Hauler to Designated Site</option>
+            <option value="Direct Depot Pickup">Contractor Direct Pickup at Distribution Depot</option>
           </select>
         </div>
 
-        <div class="form-group">
-          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; text-transform: none; font-size: 0.95rem;">
-            <input type="checkbox" id="checkoutOperatorCheck" style="width: 18px; height: 18px;" checked>
-            <span>Assign Certified Heavy Machine Operator (+₹1,500/day complimentary in demo)</span>
+        <div class="form-element">
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.85rem; color: var(--dark-850);">
+            <input type="checkbox" id="checkoutOperatorCheck" style="width: 16px; height: 16px;" checked>
+            <span>Assign Certified Heavy Machine Operator (Union/Standard Compliance Included)</span>
           </label>
         </div>
 
-        <div class="form-group">
-          <label for="checkoutProjectNotes">Project Site Address & Special Instructions</label>
-          <textarea class="form-control" id="checkoutProjectNotes" rows="3" placeholder="e.g. Sector 62 Industrial Corridor, Gate 3 Entry, Contact Foreman Sharma"></textarea>
+        <div class="form-element">
+          <label class="form-label" for="checkoutProjectNotes">Jobsite Address & Gate Access Instructions</label>
+          <textarea class="form-textarea" id="checkoutProjectNotes" rows="3" placeholder="Specify site address, gate access protocol, and site contact phone number..."></textarea>
         </div>
 
-        <div class="form-group">
-          <label>Payment Method (Simulated Gateway)</label>
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
-            <label style="border: 2px solid var(--primary); padding: 0.75rem; border-radius: var(--radius-md); text-align: center; cursor: pointer; background: rgba(255,195,0,0.08);">
+        <div class="form-element">
+          <label class="form-label">Billing & Settlement Method</label>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem;">
+            <label style="border: 1px solid var(--brand-amber); padding: 0.6rem; border-radius: var(--radius-sm); text-align: center; cursor: pointer; background: var(--brand-amber-subtle); font-size: 0.82rem; font-weight: 600;">
               <input type="radio" name="paymethod" checked style="display: none;">
-              <strong>💳 Card</strong>
+              Commercial Account
             </label>
-            <label style="border: 2px solid var(--gray-300); padding: 0.75rem; border-radius: var(--radius-md); text-align: center; cursor: pointer;">
+            <label style="border: 1px solid var(--slate-300); padding: 0.6rem; border-radius: var(--radius-sm); text-align: center; cursor: pointer; font-size: 0.82rem;">
               <input type="radio" name="paymethod" style="display: none;">
-              <strong>📱 UPI / QR</strong>
+              Corporate Card
             </label>
-            <label style="border: 2px solid var(--gray-300); padding: 0.75rem; border-radius: var(--radius-md); text-align: center; cursor: pointer;">
+            <label style="border: 1px solid var(--slate-300); padding: 0.6rem; border-radius: var(--radius-sm); text-align: center; cursor: pointer; font-size: 0.82rem;">
               <input type="radio" name="paymethod" style="display: none;">
-              <strong>🏢 PO / Net 30</strong>
+              Wire / PO (Net 30)
             </label>
           </div>
         </div>
 
-        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.75rem;">
           <button class="btn btn-outline" onclick="app.closeCheckoutModal()">Cancel</button>
-          <button class="btn btn-primary" onclick="app.submitBookingOrder()">
-            Dispatch Fleet & Confirm Booking 🎉
+          <button class="btn btn-accent" onclick="app.submitBookingOrder()">
+            Confirm Order & Schedule Dispatch
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: Admin Add Equipment -->
+  <!-- MODAL: Admin Enroll Machinery -->
   <div class="modal-overlay" id="addEquipmentModal" aria-hidden="true">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 style="font-size: 1.5rem; font-weight: 800;">Add New Fleet Machine</h2>
-        <button class="modal-close-btn" onclick="app.closeAddEquipmentModal()" aria-label="Close modal">✕</button>
+    <div class="modal-window">
+      <div class="modal-top-bar">
+        <h2 style="font-size: 1.35rem;">Enroll Machinery Unit</h2>
+        <button class="modal-close-icon-btn" onclick="app.closeAddEquipmentModal()" aria-label="Close dialog">
+          <svg class="icon icon-lg" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
 
-      <div class="modal-body">
+      <div class="modal-content-area">
         <form onsubmit="app.submitNewEquipment(event)">
-          <div class="form-group">
-            <label for="newEqName">Equipment Name *</label>
-            <input type="text" class="form-control" id="newEqName" placeholder="e.g. Komatsu PC210 Excavator" required>
+          <div class="form-element">
+            <label class="form-label" for="newEqName">Equipment Formal Description *</label>
+            <input type="text" class="form-input" id="newEqName" placeholder="e.g. Komatsu PC210-10M0 Hydraulic Excavator" required>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label for="newEqCategory">Category</label>
-              <select class="form-control" id="newEqCategory">
+          <div class="form-row-2">
+            <div class="form-element">
+              <label class="form-label" for="newEqCategory">Machinery Category</label>
+              <select class="form-select" id="newEqCategory">
                 <option value="CAT-HM">Heavy Machinery</option>
                 <option value="CAT-MH">Material Handling</option>
-                <option value="CAT-AL">Aerial Lifts</option>
+                <option value="CAT-AL">Aerial Access</option>
                 <option value="CAT-CP">Compaction Equipment</option>
-                <option value="CAT-PT">Power & Generators</option>
+                <option value="CAT-PT">Power Generation</option>
               </select>
             </div>
-            <div class="form-group">
-              <label for="newEqLocation">Depot Location</label>
-              <select class="form-control" id="newEqLocation">
-                <option value="LOC-NY">Warehouse A (East Hub - NY)</option>
-                <option value="LOC-LA">Warehouse B (West Hub - LA)</option>
-                <option value="LOC-CH">Midwest Depot (Chicago)</option>
+            <div class="form-element">
+              <label class="form-label" for="newEqLocation">Assigned Depot</label>
+              <select class="form-select" id="newEqLocation">
+                <option value="LOC-NY">Depot North - East Hub (New York)</option>
+                <option value="LOC-LA">Depot West - Pacific Hub (Los Angeles)</option>
+                <option value="LOC-CH">Depot Central - Midwest Yard (Chicago)</option>
               </select>
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label for="newEqRate">Daily Rate (₹) *</label>
-              <input type="number" class="form-control" id="newEqRate" value="35000" required>
+          <div class="form-row-3">
+            <div class="form-element">
+              <label class="form-label" for="newEqRate">Day Rate (₹) *</label>
+              <input type="number" class="form-input" id="newEqRate" value="32000" required>
             </div>
-            <div class="form-group">
-              <label for="newEqMfg">Manufacturer</label>
-              <input type="text" class="form-control" id="newEqMfg" value="Komatsu">
+            <div class="form-element">
+              <label class="form-label" for="newEqMfg">Manufacturer</label>
+              <input type="text" class="form-input" id="newEqMfg" value="Komatsu Ltd.">
             </div>
-            <div class="form-group">
-              <label for="newEqModel">Model Number</label>
-              <input type="text" class="form-control" id="newEqModel" value="PC210-10M0">
+            <div class="form-element">
+              <label class="form-label" for="newEqModel">Model Series</label>
+              <input type="text" class="form-input" id="newEqModel" value="PC210 Series">
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="newEqDesc">Description & Specifications</label>
-            <textarea class="form-control" id="newEqDesc" rows="3" placeholder="High efficiency hydraulic machine with heavy-duty boom..."></textarea>
+          <div class="form-element">
+            <label class="form-label" for="newEqDesc">Technical Overview & Specifications</label>
+            <textarea class="form-textarea" id="newEqDesc" rows="3" placeholder="Enter operating weight, horsepower, and special boom attachments..."></textarea>
           </div>
 
-          <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+          <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
             <button type="button" class="btn btn-outline" onclick="app.closeAddEquipmentModal()">Cancel</button>
-            <button type="submit" class="btn btn-primary">+ Add Machine to Live Fleet</button>
+            <button type="submit" class="btn btn-accent">Save to Fleet Registry</button>
           </div>
         </form>
       </div>
@@ -666,39 +663,35 @@
   </div>
 
   <!-- Toast Container -->
-  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+  <div class="toast-shelf" id="toastShelf" aria-live="polite"></div>
 
-  <!-- Footer -->
-  <footer class="footer">
+  <!-- Corporate Enterprise Footer -->
+  <footer class="enterprise-footer">
     <div class="container">
-      <div class="footer-content">
-        <div style="display: flex; align-items: center; gap: 1rem;">
-          <div class="logo-badge" style="width: 48px; height: 48px;">ET</div>
-          <div>
-            <h3 style="color: var(--white); font-size: 1.5rem;">EquipTrack</h3>
-            <p style="color: var(--gray-400); font-size: 0.9rem;">Modern Heavy Construction Equipment Fleet Operations</p>
-          </div>
+      <div class="footer-inner">
+        <div>
+          <h3 style="color: var(--white); font-size: 1.15rem; font-weight: 800;">EquipTrack Fleet Operations</h3>
+          <p style="color: var(--slate-400); font-size: 0.8rem; margin-top: 0.2rem;">Enterprise Construction Equipment Logistics & Asset Management</p>
         </div>
 
-        <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
-          <button class="btn btn-outline btn-sm" style="color: var(--white); border-color: rgba(255,255,255,0.3);" onclick="app.switchTab('home')">Home</button>
-          <button class="btn btn-outline btn-sm" style="color: var(--white); border-color: rgba(255,255,255,0.3);" onclick="app.switchTab('browse')">Fleet Catalog</button>
-          <button class="btn btn-outline btn-sm" style="color: var(--white); border-color: rgba(255,255,255,0.3);" onclick="app.switchTab('admin')">Admin Console</button>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <button class="btn btn-outline btn-sm" style="background: transparent; color: var(--slate-300); border-color: rgba(255,255,255,0.15);" onclick="app.switchTab('home')">Overview</button>
+          <button class="btn btn-outline btn-sm" style="background: transparent; color: var(--slate-300); border-color: rgba(255,255,255,0.15);" onclick="app.switchTab('browse')">Fleet Catalog</button>
+          <button class="btn btn-outline btn-sm" style="background: transparent; color: var(--slate-300); border-color: rgba(255,255,255,0.15);" onclick="app.switchTab('admin')">Operations</button>
         </div>
       </div>
 
-      <div class="footer-bottom">
+      <div class="footer-copy">
         <div>
-          &copy; 2026 EquipTrack Systems. Built for mega infrastructure and heavy industrial construction.
+          &copy; 2026 EquipTrack Systems Inc. Standard commercial fleet operations and certified machinery compliance.
         </div>
-        <div style="display: flex; gap: 1rem;">
-          <span>Repository: <a href="https://github.com/sanjayvasanm/EquipTrack" target="_blank" style="color: var(--primary); text-decoration: underline;">sanjayvasanm/EquipTrack</a></span>
+        <div>
+          Repository: <a href="https://github.com/sanjayvasanm/EquipTrack" target="_blank" style="color: var(--brand-amber); text-decoration: underline;">sanjayvasanm/EquipTrack</a>
         </div>
       </div>
     </div>
   </footer>
 
-  <!-- Main JavaScript App -->
   <script src="./js/app.js"></script>
 </body>
 </html>

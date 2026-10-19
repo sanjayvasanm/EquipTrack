@@ -173,7 +173,7 @@
 
             <!-- Customer Information -->
             <div class="details-section">
-                <h3>👤 Customer Information</h3>
+                <h3>Customer Information</h3>
                 <div class="details-grid">
                     <div class="detail-item">
                         <span class="detail-label">Name</span>
@@ -196,7 +196,7 @@
 
             <!-- Equipment Information -->
             <div class="details-section">
-                <h3>🚜 Equipment Information</h3>
+                <h3>Equipment Information</h3>
                 <div class="details-grid">
                     <div class="detail-item">
                         <span class="detail-label">Equipment</span>
@@ -219,7 +219,7 @@
 
             <!-- Rental Period -->
             <div class="details-section">
-                <h3>📅 Rental Period</h3>
+                <h3>Rental Period</h3>
                 <div class="details-grid">
                     <div class="detail-item">
                         <span class="detail-label">Start Date</span>
@@ -242,7 +242,7 @@
 
             <!-- Payment Information -->
             <div class="details-section">
-                <h3>💳 Payment Information</h3>
+                <h3>Payment Information</h3>
                 <div class="details-grid">
                     <div class="detail-item">
                         <span class="detail-label">Payment Status</span>
@@ -267,7 +267,7 @@
 
             <!-- Delivery Information -->
             <div class="details-section" th:if="${booking.deliveryAddress}">
-                <h3>📍 Delivery Information</h3>
+                <h3>Delivery Information</h3>
                 <div class="details-grid">
                     <div class="detail-item">
                         <span class="detail-label">Delivery Address</span>
@@ -282,8 +282,8 @@
 
             <!-- Admin Actions (only for pending bookings) -->
             <div class="action-buttons" sec:authorize="hasRole('ADMIN')" th:if="${booking.status == T(com.equiptrack.model.Booking.BookingStatus).PENDING}">
-                <button class="btn-approve" onclick="approveBooking()">✓ Approve Booking</button>
-                <button class="btn-reject" onclick="rejectBooking()">✗ Reject Booking</button>
+                <button class="btn-approve" onclick="approveBooking()">Approve Booking</button>
+                <button class="btn-reject" onclick="rejectBooking()">Reject Booking</button>
             </div>
 
             <!-- Back Button -->
